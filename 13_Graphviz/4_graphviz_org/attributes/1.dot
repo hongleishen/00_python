@@ -1,0 +1,6 @@
+digraph G {
+  a -> c;
+  a -> b;
+  b -> c;
+  //b -> c[constraint=false];
+}

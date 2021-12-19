@@ -1,0 +1,24 @@
+digraph graph_settings {  
+    start [shape = "Mdiamond"]  
+    end [shape = "Msquare"]  
+      
+    subgraph cluster_sub1 {  
+        label = "process #1"  
+        labelloc = "t"  
+        bgcolor = "gray55"  
+        node [style = "filled", color = "white"]  
+        a0 -> a1 -> a2 -> a3 -> a0  
+    }  
+    subgraph cluster_sub2 {  
+        label = "process #2"  
+        labelloc = "t"  
+        color = "blue"  
+        node [style = "filled", color = "black", fillcolor = "gray55"]  
+        b0 -> b1 -> b2 -> b3  
+    }  
+      
+    start -> {a0, b0}  
+    a1 -> b3  
+    b2 -> a3  
+    {a3, b3} -> end  
+} 

@@ -1,0 +1,77 @@
+digraph graph1{            //digraph->  graph-- 
+    label="this is a graph";
+    a[shape="box"];
+    b[shape="doublecircle"];
+    i[style="filled"];
+    ii[style="dotted",fontcolor="red"];
+    iii[style="solid"];
+    iiii[style="dashed"];
+    iiiii[style="bold"];
+    iiiiii[style="invis"];
+    aa[style="filled",fillcolor="green"];//The premise of using "fillcolor" is that "style" is "filled"
+    aaa[style="bold",color="blue"];
+    bb[width=1,hight=1];
+    
+    edge [style="dotted"];        //node[] and edge[] are works for everything after that
+    a->i;
+    
+
+    //graph[bgcolor="lightskyblue"];
+    rankdir="TB";            //LR RL TB BT
+    //rotate=90;
+
+
+    subgraph  cluster_sgh{            //subgraph顧﹍uster
+    label="this is a subgraph";
+    bgcolor=yellow;
+    rankdir="LR";
+    
+    c[shape="egg",label="this is node c"];
+    d[label="this is node d"];        
+    }
+
+
+    subgraph  cluster_sgh2{    
+    fontname="FangSong";                //鐎涙ぞ缍
+    label="input chinese";
+    bgcolor=blue;
+    e;f;
+    e->f;        
+    }
+
+    subgraph  cluster_sgh3{    
+    fontname="SimHei";                //姒涙垳缍
+    label="youkan input chinese申红磊";
+    bgcolor=red;
+    g;h;
+    h->h;        
+    }
+
+
+
+/*
+table1 [label=<
+<table>
+    <tr>
+        <td port="one">1</td>
+        <td>2</td>
+    </tr>
+    <tr>
+        <td>3</td>
+        <td>4</td>
+    </tr>
+</table>
+>];
+
+*/
+
+
+    example [ shape = record, label = "{<head>cell1 | cell2 | cell3}" ];
+
+    node [shape=record];
+    edge [style="bold"];
+    table1 [label="{<head>cell1|cell2|a}"];
+    table2 [label="{<head>b|c|d|e}"];
+    table1:head->table2:head;
+
+}

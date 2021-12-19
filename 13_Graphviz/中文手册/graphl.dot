@@ -1,0 +1,10 @@
+digraph G {
+	main->cleanup;
+    
+	main->init;
+    init->printf;
+	
+    main->parse->execute;
+	execute->make_string;
+	execute->compare;
+}

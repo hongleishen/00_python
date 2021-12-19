@@ -1,0 +1,57 @@
+
+ALL_INCLUDES := \
+		-I$(srctree)/include \
+		-I$(srctree)/include/autogen \
+		-I$(srctree)/patterns \
+		-I$(srctree)/include/stdinc \
+		-I$(srctree)/boards/$(TARGET_BOARD)/include \
+		-I$(srctree)/rtos/include \
+		-I$(srctree)/rtos/portable/GCC \
+		-I$(srctree)/drivers \
+		-I$(srctree)/drivers/irq \
+		-I$(srctree)/drivers/ddr \
+		-I$(srctree)/drivers/printf \
+		-I$(srctree)/drivers/timers \
+		-I$(srctree)/drivers/delay \
+		-I$(srctree)/drivers/uart \
+		-I$(srctree)/drivers/gpio \
+		-I$(srctree)/drivers/pinmux \
+		-I$(srctree)/drivers/i2c \
+		-I$(srctree)/drivers/sensor \
+		-I$(srctree)/drivers/vcsel_driver \
+		-I$(srctree)/drivers/reset \
+		-I$(srctree)/drivers/trigger \
+		-I$(srctree)/drivers/dpu_2280 \
+		-I$(srctree)/drivers/irrx \
+		-I$(srctree)/tools/easylogger/inc \
+		-I$(srctree)/tools/FreeRTOS_CLI \
+		-I$(srctree)/tools/printf \
+		-I$(srctree)/main \
+		-I$(srctree)/drivers/qspi \
+		-I$(srctree)/drivers/include \
+		-I$(srctree)/drivers/dma \
+		-I$(srctree)/drivers/clock \
+		-I$(srctree)/drivers/usb \
+		-I$(srctree)/drivers/ssp \
+		-I$(srctree)/drivers/mailbox \
+		-I$(srctree)/app/dpu \
+		-I$(srctree)/drivers/csi_rx\
+		-I$(srctree)/drivers/cpu
+
+dirs-y += rtos/
+dirs-y += main/
+dirs-y += app/
+dirs-y += drivers/
+dirs-y += boards/$(TARGET_BOARD)/
+dirs-y += tools/
+
+
+dirs-n  = drivers/dpu_1680
+dirs-n += drivers/csi_tx
+dirs-n += drivers/sensor
+dirs-n += drivers/isp8000
+
+#objs-y += 
+
+#Currently, we only support static library,i.e. "*.a"
+libs-y += 

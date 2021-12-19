@@ -1,0 +1,8 @@
+digraph {
+	A [label="apple"]
+	B [label="Sir banana"]
+	L [label="Sir cat"]
+	A -> B
+	A -> L
+	B -> L [constrdasaint=false]
+}

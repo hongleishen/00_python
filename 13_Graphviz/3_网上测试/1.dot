@@ -1,0 +1,8 @@
+digraph edge_settings {  
+    edge [color = "green", decorate = false]        //设置边的默认属性  
+    node [shape = "polygon", sides = 4, color = "blue"]  
+    a -> b [style = "dotted", color = "red", label = "a to b"]  //设置style、color、label  
+    b: se -> c: w [headlabel = "end",  taillabel = "start"]     //设置边从b的“东南方”出发，从c的“西方”结束，设置有向边起点和重点的label  
+    edge [style = "bond", decorate = true]      //设置之后的边加粗并且标签和连线之间有线标注  
+    {c, f} -> {d, e} [label = "multi-lines"]    //可以用这种方式同时画多条边  
+} 

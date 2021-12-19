@@ -1,0 +1,19 @@
+digraph G {
+	size = "4,4"
+	main[shape=box];				// shap 形状
+	
+	main->parse[weight=40];			// 实际没效果
+	parse->execute;
+	main->init[style=dotted];		// style 线形
+	main->cleanup;
+	
+	execute->{make_string; printf};
+	init->make_string;
+	make_string[label="xuli is dog"];	// node本身 改变label
+	
+	edge[color=red];
+	main->printf[style=bold, label="100 times"];	//连接线
+	
+	node[shape=box, style=filled, color=".7 .3 1.0"];
+	execute->compare;
+}

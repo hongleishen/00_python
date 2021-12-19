@@ -1,0 +1,7 @@
+digraph {
+	hello -> world;
+	a -> b;
+	hello -> a
+	a -> f;
+	
+}

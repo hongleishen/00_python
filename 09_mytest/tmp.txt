@@ -1,0 +1,9 @@
+[  180.722000] USB_ICL: effective vote is now 310000 voted by PD_VOTER,7
+[  180.722024] PL_ENABLE_INDIRECT: effective vote is now 0 voted by USBIN_I_VOTER,0
+[  180.722177] CP_ILIM: effective vote is now 310000 voted by ICL_CHANGE_VOTER,1
+[  180.722739] CP_DISABLE: effective vote is now 1 voted by ILIM_VOTER,1
+[  180.723415] PL_AWAKE: effective vote is now 0 voted by FCC_STEPPER_VOTER,0
+[  180.725929] CP_ILIM: effective vote is now 300000 voted by ICL_VOTER,3
+[  180.730408] PL_AWAKE: effective vote is now 1 voted by FCC_STEPPER_VOTER,0
+[  180.764668] USB_ICL: effective vote is now 2450000 voted by PD_VOTER,7
+[  180.773111] CP_ILIM: effective vote is now 350000 voted by ICL_VOTER,3

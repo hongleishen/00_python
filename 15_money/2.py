@@ -314,7 +314,7 @@ def to_doubule_entry_account(datas, fdatas):
                             new_item.append(-new_item[2])
 
                     # new_day.append(lrichang)
-                #process_doubule_entry_account(new_item, new_day, time)
+                    #process_doubule_entry_account(new_item, new_day, time)
 
                      
 

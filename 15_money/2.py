@@ -208,7 +208,46 @@ def every_record_to_one_doubule_entry_account_line(datas, fdatas):
     
     #fdatas = new_datas
             
+def to_df_daysum(df):
+    lday = []
+    datas = []
+    for i in range(len(df['日期'])):
+        for j in range(len(cl)):
+            if j == 0:
+                lday.append(df.iloc[i][j])
 
+            elif df.iloc[i][j] != 0:
+                lday.append(df.iloc[i][j][1])
+            else:
+                lday.append(df.iloc[i][j])
+        #print('lday= ', lday)
+        datas.append(lday)
+        lday = []
+
+    # 去掉lable后的 df
+    df_rmlab = pd.DataFrame(data = datas, columns = cl)
+    #print(df_rmlab)
+
+    ls = list(df['日期'])
+    lriqi = []
+    for i in ls:
+        if not i in lriqi:
+            lriqi.append(i)
+    print(lriqi)
+    
+    df_dsum = pd.DataFrame(columns = cl)
+    n = 0
+    for riqi in lriqi:
+        print('riqi ', riqi)
+        df_day = df_rmlab[ df_rmlab['日期'] == riqi ]
+        #print(df_day)
+        day_sum = df_day.sum()
+        day_sum[0] = riqi       # 恢复日期
+        #print(day_sum)
+        df_dsum.loc[n] = list(day_sum)
+        n += 1
+    
+    return df_dsum
 
 
 if __name__ == '__main__':
@@ -265,49 +304,14 @@ if __name__ == '__main__':
 
     # 4. df_stat  #归一化
     print("\n\n 4. df_stat")
-
     #df = df[df['日期'] == 11.16]
-    #print(df)
-
-    lday = []
-    datas = []
-    for i in range(len(df['日期'])):
-        for j in range(len(cl)):
-            if j == 0:
-                lday.append(df.iloc[i][j])
-
-            elif df.iloc[i][j] != 0:
-                lday.append(df.iloc[i][j][1])
-            else:
-                lday.append(df.iloc[i][j])
-        #print('lday= ', lday)
-        datas.append(lday)
-        lday = []
-
-    # 去掉lable后的 df
-    df_rmlab = pd.DataFrame(data = datas, columns = cl)
-    print(df_rmlab)
-
-    ls = list(df['日期'])
-    lriqi = []
-    for i in ls:
-        if not i in lriqi:
-            lriqi.append(i)
-    print(lriqi)
     
-    df_dsum = pd.DataFrame(columns = cl)
-    n = 0
-    for riqi in lriqi:
-        print('riqi ', riqi)
-        df_day = df_rmlab[ df_rmlab['日期'] == riqi  ]
-        print(df_day)
-        day_sum = df_day.sum()
-        day_sum[0] = riqi
-        print(day_sum)
-        df_dsum.loc[n] = list(day_sum)
-        n += 1
-    
-    print(df_dsum)
+    df_daysum = to_df_daysum(df)
+    print(df_daysum)
+
+    # 统计
+
+
 
     #df_tmp = df_rmlab[ df_rmlab['日期'] == 11.16  ]
     #print(df_tmp) 

@@ -67,6 +67,7 @@ def to_day_datas():
 def process_item_3_passive(item):
     for accout in laccout:
         if item[3] == accout:
+            pass
 
 
     if item[3] == '招商':
@@ -88,7 +89,29 @@ def process_item_3_passive(item):
         d_baitiao = item[4]
 
 
-def process_doubule_entry_account(item, new_day, time):
+def one_item_to_one_line(item, new_day, time):
+    #               0      1       2    3      4
+    # new_item =  ['日常', '电池', 2.0, '平安', -2.0]
+
+    print(row_account)
+    # ['日常', '额外', '抖音', '固定', 'vlend', 'income', 'vcheck', '招商', '平安', '余额宝', '农商', '花呗', '平安信', '微粒', '白条']
+    
+    print('[func] one_item_to_one_line')
+
+    #new_day = []
+    for count in row_account:
+        new_day.append(0)
+    
+    new_day[row_account.index(item[0])] = item[1:3]
+    new_day[row_account.index(item[3])] = ['被动', item[4]]
+    new_day.insert(0, time)
+
+    print(new_day)
+
+    return new_day
+
+    return
+
     # ----虚拟账户--------------
     d_richang = {}
     d_ewai = {}
@@ -171,7 +194,7 @@ def process_doubule_entry_account(item, new_day, time):
 
 
 
-def to_doubule_entry_account(datas, fdatas):
+def every_record_to_one_doubule_entry_account_line(datas, fdatas):
     new_item = []
     new_day = []
     #new_datas = []
@@ -262,10 +285,9 @@ def to_doubule_entry_account(datas, fdatas):
                         else:
                             new_item.append(-new_item[2])
 
-                    # new_day.append(lrichang)
-                process_doubule_entry_account(new_item, new_day, time)
-
                 print('==new_item = ', new_item)
+
+                one_item_to_one_line(new_item, new_day, time)                
                 print(' ===============new_day', new_day, '===end============\n')
                 new_item = []
 
@@ -303,6 +325,7 @@ if __name__ == '__main__':
 
     cl = lvirt + laccout
     cl.insert(0, '日期')
+    row_account = lvirt + laccout
 
     datas = []
     fdatas = []
@@ -312,19 +335,20 @@ if __name__ == '__main__':
     for item in datas:
         print(item, '\n')
 
-    # 2. 每个日期 格式化 为 贷记记账
+    # 2. 每条记录，变成 df的一行，用贷记记账
     print('\n\n to_doubule_entry_account ^^^^ ')
-    to_doubule_entry_account(datas, fdatas)
-    #for item in fdatas:
-    #    print(item, '\n')
+    every_record_to_one_doubule_entry_account_line(datas, fdatas)
+    print("***********************************")
+    for item in fdatas:
+        print(item, '\n')
 
     # 3. 组成df
     print('\n\n df')
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
     pd.set_option('display.width', 300)         # 设置打印宽度(**重要**)
-    #df = pd.DataFrame(data = fdatas, columns = cl)
-    #print(df)
+    df = pd.DataFrame(data = fdatas, columns = cl)
+    print(df)
 
 
     # 4. df添加统计  #归一化

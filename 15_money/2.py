@@ -93,106 +93,18 @@ def one_item_to_one_line(item, new_day, time):
     #               0      1       2    3      4
     # new_item =  ['日常', '电池', 2.0, '平安', -2.0]
 
-    print(row_account)
+    # print(row_account)
     # ['日常', '额外', '抖音', '固定', 'vlend', 'income', 'vcheck', '招商', '平安', '余额宝', '农商', '花呗', '平安信', '微粒', '白条']
     
-    print('[func] one_item_to_one_line')
+    # print('[func] one_item_to_one_line')
 
-    #new_day = []
     for count in row_account:
         new_day.append(0)
     
     new_day[row_account.index(item[0])] = item[1:3]
     new_day[row_account.index(item[3])] = ['被动', item[4]]
     new_day.insert(0, time)
-
-    print(new_day)
-
     return new_day
-
-    return
-
-    # ----虚拟账户--------------
-    d_richang = {}
-    d_ewai = {}
-    d_douyin = {}
-    d_guding = {}
-    d_vlend = {}
-    
-    d_income = {}
-    d_vcheck = {}
-
-    # -----账户---------------------
-    d_zhaoshang = {}
-    d_pingan = {}
-    d_yuebao = {}
-
-    d_nongshang = {}
-    d_huabei = {}
-    d_pinganxin = {}
-    d_weili = {}
-    d_baitiao = {}
-
-    # 虚拟账户 添加数据  
-    if item[0] == '日常':
-        d_richang[item[1]] = item[2]
-
-
-    elif item[0] == '额外':
-        d_ewai[item[1]] = item[2]
-    elif item[0] == '抖音':
-        l_douyin = item[1:3]
-    elif item[0] == '固定':
-        l_guding = item[1:3]
-
-    elif item[0] == 'income':
-        l_income = item[1:3]
-    
-
-    # 账户 添加数据
-    if item[3] == '招商':
-        l_zhaoshang = item[4]
-    elif item[3] == '平安':
-        l_pingan = item[4]
-    elif item[3] == '余额宝':
-        l_yuebao = item[4]
-
-    elif item[3] == '农商':
-        l_nongshang = item[4]
-    elif item[3] == '花呗':
-        l_huabei = item[4]
-    elif item[3] == '平安信':
-        l_pinganxin = item[4]
-    elif item[3] == '微粒':
-        l_weili = item[4]
-    elif item[3] == '白条':
-        l_baitiao = item[4]
-    
-
-    # 流水式添加数据
-    new_day.append(time)
-    # 虚拟
-    new_day.append(l_richang)
-    new_day.append(l_ewai)
-    new_day.append(l_douyin)
-    new_day.append(l_guding)
-    
-    new_day.append(l_income)
-    new_day.append(l_vcheck)
-
-    # 账户
-    new_day.append(l_zhaoshang)
-    new_day.append(l_pingan)
-    new_day.append(l_yuebao)
-
-    new_day.append(l_nongshang)
-    new_day.append(l_huabei)
-    new_day.append(l_pinganxin)
-    new_day.append(l_weili)
-    new_day.append(l_baitiao)
-
-
-
 
 def every_record_to_one_doubule_entry_account_line(datas, fdatas):
     new_item = []
@@ -338,19 +250,69 @@ if __name__ == '__main__':
     # 2. 每条记录，变成 df的一行，用贷记记账
     print('\n\n to_doubule_entry_account ^^^^ ')
     every_record_to_one_doubule_entry_account_line(datas, fdatas)
-    print("***********************************")
-    for item in fdatas:
-        print(item, '\n')
+    # print("***********************************")
+    #for item in fdatas:
+    #    print(item, '\n')
 
     # 3. 组成df
     print('\n\n df')
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
     pd.set_option('display.width', 300)         # 设置打印宽度(**重要**)
+    # df2 = pd.DataFrame(data=data, index=index, columns = columns)
     df = pd.DataFrame(data = fdatas, columns = cl)
     print(df)
 
+    # 4. df_stat  #归一化
+    print("\n\n 4. df_stat")
 
-    # 4. df添加统计  #归一化
+    #df = df[df['日期'] == 11.16]
+    #print(df)
+
+    lday = []
+    datas = []
+    for i in range(len(df['日期'])):
+        for j in range(len(cl)):
+            if j == 0:
+                lday.append(df.iloc[i][j])
+
+            elif df.iloc[i][j] != 0:
+                lday.append(df.iloc[i][j][1])
+            else:
+                lday.append(df.iloc[i][j])
+        #print('lday= ', lday)
+        datas.append(lday)
+        lday = []
+
+    # 去掉lable后的 df
+    df_rmlab = pd.DataFrame(data = datas, columns = cl)
+    print(df_rmlab)
+
+    ls = list(df['日期'])
+    lriqi = []
+    for i in ls:
+        if not i in lriqi:
+            lriqi.append(i)
+    print(lriqi)
+    
+    df_dsum = pd.DataFrame(columns = cl)
+    n = 0
+    for riqi in lriqi:
+        print('riqi ', riqi)
+        df_day = df_rmlab[ df_rmlab['日期'] == riqi  ]
+        print(df_day)
+        day_sum = df_day.sum()
+        day_sum[0] = riqi
+        print(day_sum)
+        df_dsum.loc[n] = list(day_sum)
+        n += 1
+    
+    print(df_dsum)
+
+    #df_tmp = df_rmlab[ df_rmlab['日期'] == 11.16  ]
+    #print(df_tmp) 
+
+    #print('after\n', df)
+    
 
     # 5. 画图

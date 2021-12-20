@@ -64,59 +64,33 @@ def to_day_datas():
         #print('=================\n')
     datas.append(l_day)
 
-def process_item_3_passive(item):
-    for accout in laccout:
-        if item[3] == accout:
-
-
-    if item[3] == '招商':
-        d_zhaoshang['被动'] = item[4]
-    elif item[3] == '平安':
-        d_pingan = item[4]
-    elif item[3] == '余额宝':
-        d_yuebao = item[4]
-
-    elif item[3] == '农商':
-        d_nongshang = item[4]
-    elif item[3] == '花呗':
-        d_huabei = item[4]
-    elif item[3] == '平安信':
-        d_pinganxin = item[4]
-    elif item[3] == '微粒':
-        d_weili = item[4]
-    elif item[3] == '白条':
-        d_baitiao = item[4]
-
 
 def process_doubule_entry_account(item, new_day, time):
     # ----虚拟账户--------------
-    d_richang = {}
-    d_ewai = {}
-    d_douyin = {}
-    d_guding = {}
-    d_vlend = {}
+    l_richang = []
+    l_ewai = []
+    l_douyin = []
+    l_guding = []
     
-    d_income = {}
-    d_vcheck = {}
+    l_income = []
+    l_vcheck = []
 
     # -----账户---------------------
-    d_zhaoshang = {}
-    d_pingan = {}
-    d_yuebao = {}
+    l_zhaoshang = 0
+    l_pingan = 0
+    l_yuebao = 0
 
-    d_nongshang = {}
-    d_huabei = {}
-    d_pinganxin = {}
-    d_weili = {}
-    d_baitiao = {}
+    l_nongshang = 0
+    l_huabei = 0
+    l_pinganxin = 0
+    l_weili = 0
+    l_baitiao = 0
 
-    # 虚拟账户 添加数据  
+    # 虚拟账户 添加数据
     if item[0] == '日常':
-        d_richang[item[1]] = item[2]
-
-
+        l_richang = item[1:3]
     elif item[0] == '额外':
-        d_ewai[item[1]] = item[2]
+        l_ewai = item[1:3]
     elif item[0] == '抖音':
         l_douyin = item[1:3]
     elif item[0] == '固定':
@@ -126,7 +100,7 @@ def process_doubule_entry_account(item, new_day, time):
         l_income = item[1:3]
     
 
-    # 账户 添加数据
+    # 账户添加数据
     if item[3] == '招商':
         l_zhaoshang = item[4]
     elif item[3] == '平安':
@@ -145,8 +119,6 @@ def process_doubule_entry_account(item, new_day, time):
     elif item[3] == '白条':
         l_baitiao = item[4]
     
-
-    # 流水式添加数据
     new_day.append(time)
     # 虚拟
     new_day.append(l_richang)
@@ -294,9 +266,9 @@ if __name__ == '__main__':
 
     # 1 资产类；  -1 负债类
     # dvirtual = [{'日常'：1}, {'额外'}}]
+
     lvirt = ['日常', '额外', '抖音', '固定',  'vlend', 'income', 'vcheck']
     lvirtv = [-1,      -1,   -1,     -1,     -1,        1,      1]
-    lve = ['richang', 'ewai']
 
     laccout = ['招商', '平安', '余额宝', '农商', '花呗', '平安信', '微粒', '白条']
     laccoutv =[1,       1,     1,        -1,      -1,     -1,     -1,      -1]

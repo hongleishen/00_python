@@ -94,7 +94,7 @@ def one_item_to_one_line(item, new_day, time):
     # new_item =  ['日常', '电池', 2.0, '平安', -2.0]
 
     # print(row_account)
-    # ['日常', '额外', '抖音', '固定', 'vlend', 'income', 'vcheck', '招商', '平安', '余额宝', '农商', '花呗', '平安信', '微粒', '白条']
+    # ['日常', '额外', '抖音', '固定', 'income', 'vcheck', 'vlend', '招商', '平安', '余额宝', '农商', '花呗', '平安信', '微粒', '白条']
     
     # print('[func] one_item_to_one_line')
 
@@ -169,7 +169,7 @@ def every_record_to_one_doubule_entry_account_line(datas, fdatas):
                 
                 new_item.append(item[0])
                 new_item.append(item[1])
-                new_item.append(float(item[2]))
+                new_item.append(int(item[2]))
                 new_item.append(item[3])
                 
                 print('--new_item = ', new_item)
@@ -242,12 +242,81 @@ def to_df_daysum(df):
         df_day = df_rmlab[ df_rmlab['日期'] == riqi ]
         #print(df_day)
         day_sum = df_day.sum()
+        #day_sum = list(map(lambda x: int(x), day_sum))
         day_sum[0] = riqi       # 恢复日期
-        #print(day_sum)
+        print('day_sum = ', day_sum)
         df_dsum.loc[n] = list(day_sum)
         n += 1
     
     return df_dsum
+
+
+def process_lable_balance(df_balance, cls):
+    ls = []
+    for label in cls:
+        series = df_day[label]
+        #print(series)
+        for money in series:
+            if ls == []:
+                ls.append(money)
+            else:
+                ls.append(ls[len(ls) - 1] + money)
+        #print(ls)
+        df_balance[label] = ls
+        ls = []
+
+
+def to_df_balance (df_day):
+    index = list(range(len(df_day)))
+    
+    # --------df_vbalance-----------------------------------------
+    df_vbalance = pd.DataFrame(index = index)
+    #df_balance['日期'] = list(df_day['日期'])
+    #print(df_vbalance)
+
+    ls = []
+
+    #cl_tmp = cl
+    #cl_tmp.pop(0)
+    ls = lvirt
+    #ls.remove('income')
+    process_lable_balance(df_vbalance, ls)
+    #print(df_vbalance)
+
+
+    #current_surplus = df_vbalance.sum(axis = 1)                   
+    expend = df_vbalance.drop('income', axis = 1).sum(axis = 1)    # 支出
+    current_surplus = df_vbalance['income'] - expend               # 本期盈余  
+
+    # 每天平均开销
+    day_aver = []                                       # 日均支出
+    days = 0
+    i = 0
+    for item in df_day['日期']:
+        #days.append(item - (df_day[0] - 1))
+        days = int(item * 100  - (df_day['日期'][0] * 100 - 1))
+        #days *= 100
+        
+        print('expend[i]  days  ', expend[i], days)
+        day_aver.append(int(expend[i] / days))
+        i += 1
+
+    print('current_surplus = ', current_surplus)
+    print('expend = ', expend)
+    print('day_aver = ', day_aver)
+
+    df_vbalance['expend'] = expend
+    df_vbalance['day_aver'] = day_aver
+    df_vbalance['curren'] = current_surplus
+    print(df_vbalance)     
+
+  
+    # --------df_balancea-----------
+    df_abalance = pd.DataFrame(index = index)
+    
+    
+
+
 
 
 if __name__ == '__main__':
@@ -267,7 +336,7 @@ if __name__ == '__main__':
 
     # 1 资产类；  -1 负债类
     # dvirtual = [{'日常'：1}, {'额外'}}]
-    lvirt = ['日常', '额外', '抖音', '固定', 'income', 'vcheck']
+    lvirt = ['日常', '额外', '抖音', '固定', 'vcheck', 'income']
     lvirtv = [-1,      -1,   -1,     -1,      1,       1]
     lve = ['richang', 'ewai']
 
@@ -281,20 +350,20 @@ if __name__ == '__main__':
     datas = []
     fdatas = []
     # 1. 读入数据， 拆分好日期
-    print('\nto_day_datas ^^^^^')
+    print('\n  ** setp 1. to_day_datas ^^^^^')
     to_day_datas()
     for item in datas:
         print(item, '\n')
 
     # 2. 每条记录，变成 df的一行，用贷记记账
-    print('\n\n to_doubule_entry_account ^^^^ ')
+    print('\n\n   **setp 2. to_doubule_entry_account ^^^^ ')
     every_record_to_one_doubule_entry_account_line(datas, fdatas)
     # print("***********************************")
     #for item in fdatas:
     #    print(item, '\n')
 
     # 3. 组成df
-    print('\n\n df')
+    print('\n\n    **step 3. df 带label')
     pd.set_option('display.unicode.ambiguous_as_wide', True)
     pd.set_option('display.unicode.east_asian_width', True)
     pd.set_option('display.width', 300)         # 设置打印宽度(**重要**)
@@ -302,17 +371,16 @@ if __name__ == '__main__':
     df = pd.DataFrame(data = fdatas, columns = cl)
     print(df)
 
-    # 4. df_stat  #归一化
-    print("\n\n 4. df_stat")
+    # 4. df 相同日期合并， 祛除label
+    print("\n\n 4. df_stat 不带label")
     #df = df[df['日期'] == 11.16]
     
-    df_daysum = to_df_daysum(df)
-    print(df_daysum)
+    df_day = to_df_daysum(df)
+    print(df_day)
 
-    df_tmp = df_daysum
-    print(df_daysum.sum(axis = 1))
-
-    # 统计
+    # 5. df_balance ;  balance 余额
+    print('\n\n **step 5:  df_stat 每个账户余额 及 类型余额')
+    df_balance = to_df_balance(df_day)
 
 
 

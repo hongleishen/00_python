@@ -267,12 +267,12 @@ if __name__ == '__main__':
 
     # 1 资产类；  -1 负债类
     # dvirtual = [{'日常'：1}, {'额外'}}]
-    lvirt = ['日常', '额外', '抖音', '固定',  'vlend', 'income', 'vcheck']
-    lvirtv = [-1,      -1,   -1,     -1,     -1,        1,      1]
+    lvirt = ['日常', '额外', '抖音', '固定', 'income', 'vcheck']
+    lvirtv = [-1,      -1,   -1,     -1,      1,       1]
     lve = ['richang', 'ewai']
 
-    laccout = ['招商', '平安', '余额宝', '农商', '花呗', '平安信', '微粒', '白条']
-    laccoutv =[1,       1,     1,        -1,      -1,     -1,     -1,      -1]
+    laccout = ['vlend', '招商', '平安', '余额宝', '农商', '花呗', '平安信', '微粒', '白条']
+    laccoutv =[1,       1,       1,     1,        -1,      -1,     -1,     -1,      -1]
 
     cl = lvirt + laccout
     cl.insert(0, '日期')
@@ -308,6 +308,9 @@ if __name__ == '__main__':
     
     df_daysum = to_df_daysum(df)
     print(df_daysum)
+
+    df_tmp = df_daysum
+    print(df_daysum.sum(axis = 1))
 
     # 统计
 

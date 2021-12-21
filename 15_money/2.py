@@ -269,22 +269,18 @@ def process_lable_balance(df_balance, cls):
 def to_df_balance (df_day):
     index = list(range(len(df_day)))
     
-    # --------df_vbalance-----------------------------------------
+    # 1. -------df_vbalance-----------------------------------------
     df_vbalance = pd.DataFrame(index = index)
     #df_balance['日期'] = list(df_day['日期'])
     #print(df_vbalance)
 
-    ls = []
-
     #cl_tmp = cl
     #cl_tmp.pop(0)
-    ls = lvirt
+    #ls = lvirt
     #ls.remove('income')
-    process_lable_balance(df_vbalance, ls)
+    process_lable_balance(df_vbalance, lvirt)
     #print(df_vbalance)
-
-
-    #current_surplus = df_vbalance.sum(axis = 1)                   
+    #             
     expend = df_vbalance.drop('income', axis = 1).sum(axis = 1)    # 支出
     current_surplus = df_vbalance['income'] - expend               # 本期盈余  
 
@@ -305,15 +301,38 @@ def to_df_balance (df_day):
     print('expend = ', expend)
     print('day_aver = ', day_aver)
 
-    df_vbalance['expend'] = expend
-    df_vbalance['day_aver'] = day_aver
-    df_vbalance['curren'] = current_surplus
-    print(df_vbalance)     
+    df_vbalance['支出'] = expend
+    df_vbalance['日均'] = day_aver
+    df_vbalance['盈余'] = current_surplus
+    df_vbalance['日期'] = df_day['日期']
+    df_vbalance = df_vbalance.set_index('日期')
+    #print(df_vbalance, '\n')     
 
   
-    # --------df_balancea-----------
-    df_abalance = pd.DataFrame(index = index)
+    # 2. -------- df_abalance -----------
+    df_abalance_cuxu = pd.DataFrame(index = index)
+
+    ls = ['vlend', '招商', '平安', '余额宝']
+    process_lable_balance(df_abalance_cuxu, ls)
+    cash = df_abalance_cuxu.drop('vlend', axis = 1).sum(axis = 1)    # 现金
+    df_abalance_cuxu['现金'] = cash
+
+    ls = ['农商', '花呗', '平安信', '微粒', '白条']
+    df_abalance_xinyong = pd.DataFrame(index = index)
+    process_lable_balance(df_abalance_xinyong, ls)
+    xinyong = df_abalance_xinyong.sum(axis = 1)                        # 信用
+    df_abalance_xinyong['信用消费'] = xinyong
+
+    card_sum = cash - xinyong                                   # 账户 总额
+    df_abalance_xinyong['账户总额'] = card_sum
     
+    #df_abalance = pd.merge(df_abalance_cuxu, df_abalance_xinyong, on = index)  # df_abalance
+    df_abalance = pd.concat([df_abalance_cuxu, df_abalance_xinyong], axis = 1)
+    df_abalance = df_abalance.set_index(df_day['日期'])
+    #print(df_abalance)
+    
+    return df_vbalance, df_abalance
+
     
 
 
@@ -380,7 +399,11 @@ if __name__ == '__main__':
 
     # 5. df_balance ;  balance 余额
     print('\n\n **step 5:  df_stat 每个账户余额 及 类型余额')
-    df_balance = to_df_balance(df_day)
+    df_vbalance, df_abalance = to_df_balance(df_day)
+
+    print(df_vbalance)
+    print()
+    print(df_abalance)
 
 
 

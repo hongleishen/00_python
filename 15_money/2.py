@@ -333,7 +333,42 @@ def to_df_balance (df_day):
     
     return df_vbalance, df_abalance
 
-    
+def plot_vbalance(df):
+    print('plot_vbalance')
+    plt.rcParams['font.sans-serif'] = ['SimHei'] # 步骤一（替换sans-serif字体）
+    plt.rcParams['axes.unicode_minus'] = False   # 步骤二（解决坐标轴负数的负号显示问题）
+
+    # 取消 上 右边框
+    ax_soc = plt.subplot(111)
+    ax_soc.spines['top'].set_visible(False)
+    ax_soc.spines['right'].set_visible(False)
+    ax_soc.set_title('SOC.txt map')
+
+    time = df.index.values
+
+    ri_chang = df['日常']
+    plt.plot(time, ri_chang, label = '日常')
+
+
+    #'''
+    plt.xlabel('riqi')
+    plt.ylabel('jine')
+    #plt.title('Charging chart')
+    plt.legend(loc='best')
+    #ax.legend(loc='upper center', ncol=1, bbox_to_anchor=(1.15,1))
+
+    # ----------tick---------------------
+    ymajorLocator = MultipleLocator(100)  # set Y 坐标刻度 精度为1
+    ax_soc.yaxis.set_major_locator(ymajorLocator)
+
+    xmajorLocator = MultipleLocator(0.01)  # set Y 坐标刻度 精度为1
+    ax_soc.xaxis.set_major_locator(xmajorLocator)
+    plt.xticks(rotation=45)
+    #'''
+
+    plt.show()
+
+
 
 
 
@@ -405,12 +440,6 @@ if __name__ == '__main__':
     print()
     print(df_abalance)
 
-
-
-    #df_tmp = df_rmlab[ df_rmlab['日期'] == 11.16  ]
-    #print(df_tmp) 
-
-    #print('after\n', df)
-    
-
     # 5. 画图
+
+    plot_vbalance(df_vbalance)

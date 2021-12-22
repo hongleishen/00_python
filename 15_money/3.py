@@ -18,7 +18,7 @@ def is_number(s):
 
 
 def to_day_datas():
-    fin = open("2.txt", encoding='utf-8')
+    fin = open("3.txt", encoding='utf-8')
     input_file = fin.read()
     file_lines = input_file.split("\n")
 
@@ -403,7 +403,7 @@ def plot_abalance(df_abalance):
 
 def plot_datas(df_vbalance, df_abalance):
     print('plot_datas')
-    fig = plt.figure(figsize=(16, 8))
+    #fig = plt.figure(figsize=(16, 8))
 
     plt.rcParams['font.sans-serif'] = ['SimHei'] # 步骤一（替换sans-serif字体）
     plt.rcParams['axes.unicode_minus'] = False   # 步骤二（解决坐标轴负数的负号显示问题）

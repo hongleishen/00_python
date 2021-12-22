@@ -310,34 +310,64 @@ def plot_vbalance(df):
     print('plot_vbalance')
     plt.rcParams['font.sans-serif'] = ['SimHei'] # 步骤一（替换sans-serif字体）
     plt.rcParams['axes.unicode_minus'] = False   # 步骤二（解决坐标轴负数的负号显示问题）
+    #plt.figure(dpi=50)
 
     # 取消 上 右边框
     ax_soc = plt.subplot(111)
     ax_soc.spines['top'].set_visible(False)
     ax_soc.spines['right'].set_visible(False)
-    ax_soc.set_title('SOC.txt map')
+    # ax_soc.set_title('SOC.txt map')
 
+
+    # ^^^^^^^^^^^^^^^^^^^ 画图 ^^^^^^^^^不是自由的^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    # 1. 虚拟账户
     time = df.index.values
 
     ri_chang = df['日常']
-    plt.plot(time, ri_chang, label = '日常')
+    plt.plot(time, ri_chang, ':', color='b', linewidth=0.5, marker='o', markersize=1.5, label = '日常')
 
+    ewai = df['额外']
+    # plt.plot(time, ewai, marker = 'x', label = '额外')  #有线
+    plt.plot(time, ewai, 'x', label = '额外')  # 无线
 
-    #'''
+    douyin = df['抖音']
+    #plt.plot(time, douyin, ':', label = '抖音')
+    plt.plot(time, douyin, marker = '$日$', markersize=15, label = '抖音')
+
+    #guding = df['固定']
+    #plt.plot(time, guding, ':', label = '固定')
+
+    #vcheck = df['vcheck']
+    #plt.plot(time, vcheck, label = 'vcheck')
+
+    #income = df['income']
+    #plt.plot(time, income, label = 'income')
+
+    zhichu = df['支出']
+    plt.plot(time, zhichu, color = 'b', linewidth=2, marker='o', markersize = 3, label = '支出')
+
+    rijun = df['日均']
+    plt.plot(time, rijun,'--', color = 'k', linewidth=1 ,label = '日均')
+
+    yingyu = df['盈余']
+    plt.plot(time, yingyu, '-.', color='g', label = '盈余')
+
+    # =============================================================================
+
     #plt.xlabel('riqi')
     #plt.ylabel('jine')
     #plt.title('Charging chart')
     plt.legend(loc='best')
     #ax.legend(loc='upper center', ncol=1, bbox_to_anchor=(1.15,1))
 
-    # ----------tick---------------------
-    ymajorLocator = MultipleLocator(100)  # set Y 坐标刻度 精度为1
-    ax_soc.yaxis.set_major_locator(ymajorLocator)
+    # ---------坐标精度---------------------
+    #ymajorLocator = MultipleLocator(500)  # set Y 坐标刻度 精度为1
+    #ax_soc.yaxis.set_major_locator(ymajorLocator)
 
     xmajorLocator = MultipleLocator(0.01)  # set Y 坐标刻度 精度为1
     ax_soc.xaxis.set_major_locator(xmajorLocator)
     plt.xticks(rotation = 45)
-    #'''
+    
 
     plt.show()
 
@@ -354,7 +384,7 @@ if __name__ == '__main__':
     # %matplotlib inline
     from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 
-    ditem = {'extera': 10, 'fixed': 11, 'douyin': 12}
+    #ditem = {'extera': 10, 'fixed': 11, 'douyin': 12}
     #print(ditem)
     #time = []
     #datas = []
@@ -409,6 +439,7 @@ if __name__ == '__main__':
     print('\n\n **step 5:  df_stat 每个账户余额 及 类型余额')
     df_vbalance, df_abalance = to_df_balance(df_day)
 
+    print()
     print(df_vbalance)
     print()
     print(df_abalance)

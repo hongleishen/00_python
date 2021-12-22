@@ -324,15 +324,20 @@ def plot_vbalance(df):
     time = df.index.values
 
     ri_chang = df['日常']
-    plt.plot(time, ri_chang, ':', color='b', linewidth=0.5, marker='o', markersize=1.5, label = '日常')
+    #plt.plot(time, ri_chang, ':', color='b', linewidth=0.5, marker='o', markersize=1.5, label = '日常')
+    plt.plot(time, ri_chang, linestyle=':', linewidth=0.5, c = seaborn.xkcd_rgb['bright blue'], 
+                marker = '$r$', markersize=4.5, label = '日常')
 
     ewai = df['额外']
     # plt.plot(time, ewai, marker = 'x', label = '额外')  #有线
-    plt.plot(time, ewai, 'x', label = '额外')  # 无线
+    # plt.plot(time, ewai, 'x', label = '额外')  # 无线
+    plt.plot(time, ewai,linestyle=':', linewidth=0.45, c = seaborn.xkcd_rgb['blue blue'], 
+                marker = '$e$', markersize = 4, label = '额外')  # 无线
 
     douyin = df['抖音']
     #plt.plot(time, douyin, ':', label = '抖音')
-    plt.plot(time, douyin, marker = '$日$', markersize=15, label = '抖音')
+    plt.plot(time, douyin, linestyle=':', linewidth=0.4, c = seaborn.xkcd_rgb['purpley blue'], 
+                marker = '$d$', markersize=4, label = '抖音')
 
     #guding = df['固定']
     #plt.plot(time, guding, ':', label = '固定')
@@ -344,13 +349,16 @@ def plot_vbalance(df):
     #plt.plot(time, income, label = 'income')
 
     zhichu = df['支出']
-    plt.plot(time, zhichu, color = 'b', linewidth=2, marker='o', markersize = 3, label = '支出')
+    plt.plot(time, zhichu,    c = 'b',                        linewidth=2, 
+                marker='o', markersize = 5, label = '支出')
 
     rijun = df['日均']
-    plt.plot(time, rijun,'--', color = 'k', linewidth=1 ,label = '日均')
+    plt.plot(time, rijun,'--',  c=seaborn.xkcd_rgb['mid blue'],   linewidth=1.5, 
+                marker='o', markersize = 5, alpha = 0.4, label = '日均')
 
     yingyu = df['盈余']
-    plt.plot(time, yingyu, '-.', color='g', label = '盈余')
+    plt.plot(time, yingyu, '-.', c = seaborn.xkcd_rgb['minty green'], 
+                marker='o', markersize = 5, alpha = 1, label = '盈余')
 
     # =============================================================================
 
@@ -379,6 +387,7 @@ def plot_vbalance(df):
 if __name__ == '__main__':
     import numpy as np
     import pandas as pd
+    import seaborn
     import matplotlib.pyplot as plt
     import sys
     # %matplotlib inline

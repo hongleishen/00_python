@@ -216,7 +216,7 @@ def to_df_daysum(df):
         day_sum = df_day.sum()
         #day_sum = list(map(lambda x: int(x), day_sum))
         day_sum[0] = riqi       # 恢复日期
-        print('day_sum = ', day_sum)
+        #print('day_sum = ', day_sum)
         df_dsum.loc[n] = list(day_sum)
         n += 1
     
@@ -305,22 +305,9 @@ def to_df_balance (df_day):
     
     return df_vbalance, df_abalance
 
-
-def plot_vbalance(df):
+def plot_vbalance(df_vbalance):
     print('plot_vbalance')
-    plt.rcParams['font.sans-serif'] = ['SimHei'] # 步骤一（替换sans-serif字体）
-    plt.rcParams['axes.unicode_minus'] = False   # 步骤二（解决坐标轴负数的负号显示问题）
-    #plt.figure(dpi=50)
-
-    # 取消 上 右边框
-    ax_soc = plt.subplot(111)
-    ax_soc.spines['top'].set_visible(False)
-    ax_soc.spines['right'].set_visible(False)
-    # ax_soc.set_title('SOC.txt map')
-
-
-    # ^^^^^^^^^^^^^^^^^^^ 画图 ^^^^^^^^^不是自由的^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    # 1. 虚拟账户
+    df = df_vbalance
     time = df.index.values
 
     ri_chang = df['日常']
@@ -357,15 +344,97 @@ def plot_vbalance(df):
                 marker='o', markersize = 5, alpha = 0.4, label = '日均')
 
     yingyu = df['盈余']
-    plt.plot(time, yingyu, '-.', c = seaborn.xkcd_rgb['minty green'], 
-                marker='o', markersize = 5, alpha = 1, label = '盈余')
+    plt.plot(time, yingyu, '-.', c = 'cyan',
+                marker='o', markersize = 5, alpha = 1, label = '盈余')  # c = seaborn.xkcd_rgb['minty green'], 
+
+
+def plot_abalance(df_abalance):
+    print(sys._getframe().f_code.co_name)
+    df = df_abalance
+    time = df.index.values
+
+    #vlend = df['vlend']
+    #plt.plot(time, vlend)
+    
+    # 储蓄卡
+    zhaoshang = df['招商']
+    plt.plot(time, zhaoshang, linestyle=':', linewidth=0.5,  color='lime', 
+        marker = '$z$', markersize=4.5, drawstyle='steps-post', label = '招商')
+    pingan = df['平安']
+    plt.plot(time, pingan, linestyle=':', linewidth=0.5, c = 'chartreuse',
+                marker = '$p$', markersize=4.5, drawstyle='steps-post', label = '平安')
+
+    yuebao = df['余额宝']
+    plt.plot(time, yuebao, linestyle=':', linewidth=0.5, c = 'green',
+                marker = '$y$', markersize=4.5, drawstyle='steps-post', label = '余额宝')
+
+    cash = df['现金']
+    plt.plot(time, cash, linestyle='-', linewidth=1, c = 'green',
+            marker = '$c$', markersize=4.5, label = '现金')
+
+
+    # 信用卡   -----------------------------
+    nongshang = df['农商']
+    plt.plot(time, nongshang, linestyle=':', linewidth=0.5,  color='khaki', 
+        marker = '$n$', markersize=4.5, drawstyle='steps-post', label = '农商')
+    huabei = df['花呗']
+    plt.plot(time, huabei, linestyle=':', linewidth=0.5, c = 'peru',
+                marker = '$h$', markersize=4.5, drawstyle='steps-post', label = '花呗')
+
+    # 平安信   额度太小 忽略
+    # 微粒    很少用， 忽略，但文字表示
+
+    baitiao = df['白条']
+    plt.plot(time, baitiao, linestyle=':', linewidth=0.5,  color='khaki', 
+        marker = '$b$', markersize=4.5, drawstyle='steps-post', label = '白条')
+
+    xinyong = df['信用消费']
+    plt.plot(time, xinyong, linestyle='-', linewidth=2, c = 'gold',
+            marker = '$x$', markersize=4.5, label = '信用消费')
+
+
+    #-----账户总额--------------------------
+    zonge = df['账户总额']
+    plt.plot(time, zonge, linewidth = 2, c = 'r', 
+        marker = '*', markersize=6, label = '账户总额')
+
+
+
+
+def plot_datas(df_vbalance, df_abalance):
+    print('plot_datas')
+    fig = plt.figure(figsize=(16, 8))
+
+    plt.rcParams['font.sans-serif'] = ['SimHei'] # 步骤一（替换sans-serif字体）
+    plt.rcParams['axes.unicode_minus'] = False   # 步骤二（解决坐标轴负数的负号显示问题）
+    #plt.figure(dpi=50)
+
+    # 取消 上 右边框
+    ax_soc = plt.subplot(111)
+    ax_soc.spines['top'].set_visible(False)
+    ax_soc.spines['right'].set_visible(False)
+    # ax_soc.set_title('SOC.txt map')
+
+    #plt.subplots_adjust(top=0.99, bottom=0.05, left=0.02, right=0.95)
+    plt.subplots_adjust(right=0.8)  
+
+
+    # ^^^^^^^^^^^^^^^^^^^ 画图 ^^^^^^^^^不是自由的^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    # 1. 虚拟账户
+    plot_vbalance(df_vbalance)
+
+    # 2. 账户
+    plot_abalance(df_abalance)
+    
+
 
     # =============================================================================
 
     #plt.xlabel('riqi')
     #plt.ylabel('jine')
     #plt.title('Charging chart')
-    plt.legend(loc='best')
+    #plt.legend(loc='best')  loc='upper center'
+    plt.legend(loc='upper right', bbox_to_anchor=(1.3, 1))
     #ax.legend(loc='upper center', ncol=1, bbox_to_anchor=(1.15,1))
 
     # ---------坐标精度---------------------
@@ -455,4 +524,4 @@ if __name__ == '__main__':
 
     # 5. 画图
 
-    plot_vbalance(df_vbalance)
+    plot_datas(df_vbalance, df_abalance)

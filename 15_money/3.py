@@ -253,7 +253,8 @@ def to_df_balance (df_day):
     process_lable_balance(df_vbalance, lvirt)
     #print(df_vbalance)
     #             
-    expend = df_vbalance.drop('income', axis = 1).sum(axis = 1)    # 支出
+    expend = df_vbalance.drop(['vcheck', 'income'], axis = 1).sum(axis = 1)    # 支出
+    expend -= df_vbalance['vcheck']
     current_surplus = df_vbalance['income'] - expend               # 本期盈余  
 
     # 每天平均开销
@@ -262,9 +263,9 @@ def to_df_balance (df_day):
     i = 0
     for item in df_day['日期']:
         #days.append(item - (df_day[0] - 1))
-        days = int(item * 100  - (df_day['日期'][0] * 100 - 1))
-        #days *= 100
-        
+        #days = int(item * 100  - (df_day['日期'][0] * 100 - 1))
+        gap = dt.datetime.strptime(str(item), '%m.%d') - dt.datetime.strptime(str(df_day['日期'][0]), '%m.%d')
+        days = gap.days + 1
         print('expend[i]  days  ', expend[i], days)
         day_aver.append(int(expend[i] / days))
         i += 1
@@ -305,10 +306,10 @@ def to_df_balance (df_day):
     
     return df_vbalance, df_abalance
 
-def plot_vbalance(df_vbalance):
+def plot_vbalance(df_vbalance, dates):
     print('plot_vbalance')
     df = df_vbalance
-    time = df.index.values
+    time = dates
 
     ri_chang = df['日常']
     #plt.plot(time, ri_chang, ':', color='b', linewidth=0.5, marker='o', markersize=1.5, label = '日常')
@@ -369,7 +370,7 @@ def plot_abalance(df_abalance, dates):
                 marker = '$y$', markersize=4.5, drawstyle='steps-post', label = '余额宝')
 
     cash = df['现金']
-    plt.plot(time, cash, linestyle='-', linewidth=1, c = 'green',
+    plt.plot(time, cash, linestyle='-', linewidth=1, c = 'lawngreen',
                 marker = '$c$', markersize=4.5, label = '现金')
 
 
@@ -395,7 +396,7 @@ def plot_abalance(df_abalance, dates):
 
     #-----账户总额--------------------------
     zonge = df['账户总额']
-    plt.plot(time, zonge, linewidth = 2, c = 'r', 
+    plt.plot(time, zonge, linewidth = 2, c = 'gold', 
                 marker = '*', markersize=6, label = '账户总额')
 
 
@@ -414,23 +415,37 @@ def plot_datas(df_vbalance, df_abalance):
     ax.spines['right'].set_visible(False)
     # ax_soc.set_title('SOC.txt map')
 
-    plt.subplots_adjust(top=0.99, bottom=0.001, left=0.05, right=0.95)  # 调整边距
+    plt.subplots_adjust(top=0.99, bottom=0, left=0.05, right=0.95)  # 调整边距
     #plt.subplots_adjust(right=0.8)
     
+    ''' 处理日期 '''
     int_dates = df_vbalance.index.values
     year = '2021 '   # 2021 12.16
     dates = [dt.datetime.strptime(year + str(c), '%Y %m.%d') for c in int_dates]
-    print(dates)
+    #print(dates)
 
-    xfmt = matplotlib.dates.DateFormatter('%Y %m.%d')
+
+    """设置坐标轴的格式"""
+    # 设置主刻度, 每6个月一个刻度
+    daygap = mdates.DayLocator(interval=7)
+    ax.xaxis.set_major_locator(daygap)
+
+    # 设置次刻度，每个月一个刻度
+    daygap = mdates.DayLocator(interval=1)
+    ax.xaxis.set_minor_locator(daygap)
+
+    xfmt = matplotlib.dates.DateFormatter('%Y %m.%d')   # 设置 x 坐标轴的刻度格式
     ax.xaxis.set_major_formatter(xfmt)
 
-    # ^^^^^^^^^^^^^^^^^^^ 画图 ^^^^^^^^^不是自由的^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+    # ^^^^^^^^^^^^^^^^^^^ 画图 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
     # 1. 虚拟账户
-    # plot_vbalance(df_vbalance, dates)
+    plot_vbalance(df_vbalance, dates)
 
     # 2. 账户
     plot_abalance(df_abalance, dates)
+
+    # 3. label
     
 
 
@@ -463,14 +478,18 @@ if __name__ == '__main__':
     import numpy as np
     import pandas as pd
     import seaborn
-    import matplotlib
-    import matplotlib.pyplot as plt
+
     import sys
     # %matplotlib inline
+    import matplotlib
+    import matplotlib.pyplot as plt
     from matplotlib.ticker import MultipleLocator, FormatStrFormatter
+    import matplotlib.dates as mdates
+
     import datetime as dt
     import time
 
+    year = 2021
     #ditem = {'extera': 10, 'fixed': 11, 'douyin': 12}
     #print(ditem)
     #time = []

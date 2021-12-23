@@ -188,9 +188,9 @@ def to_df_daysum(df):
             if j == 0:
                 lday.append(df.iloc[i][j])
 
-            elif df.iloc[i][j] != 0:
+            elif df.iloc[i][j] != 0:            # 为 [ , ]
                 lday.append(df.iloc[i][j][1])
-            else:
+            else:                               # 为 0
                 lday.append(df.iloc[i][j])
         #print('lday= ', lday)
         datas.append(lday)
@@ -306,6 +306,7 @@ def to_df_balance (df_day):
     
     return df_vbalance, df_abalance
 
+
 def plot_vbalance(df_vbalance, dates):
     print('plot_vbalance')
     df = df_vbalance
@@ -400,6 +401,91 @@ def plot_abalance(df_abalance, dates):
                 marker = '*', markersize=6, label = '账户总额')
 
 
+def plot_label(df):
+    last_day = 0
+    pre_day = 0
+    d = {}
+
+    for i in range(len(df['日期'])):
+        for j in range(1, len(cl)):
+            if df.iloc[i][j] != 0:
+                label = df.iloc[i][j][0]
+                if label != '被动':
+
+                    val = df.iloc[i][j][1]
+                    val_text = df.iloc[i][j][0] + str(val)
+
+                    year = '2021 '
+                    day = df['日期'][i]
+                    try:
+                        pre_day =  df['日期'][i + i]
+                    except:
+                        pre_day = 0
+                    t = dt.datetime.strptime(year + str(day), '%Y %m.%d')
+
+                    if day != last_day and day != pre_day:      # 相邻两个日期不同, 本日期只有一行
+                        # 画图
+                        if j in [1, 2, 3, 4]:
+                            plt.plot(t, val, marker = '$\downarrow$', color = 'k')
+                            plt.text(t, val, val_text, horizontalalignment='center', 
+                                        verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 45)
+                        else: 
+                            plt.plot(t, val, marker = '2', color = 'gray')
+                            plt.text(t, val, val_text, horizontalalignment='center', 
+                                        verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = -45)
+
+                            last_day = day
+                
+                    elif day == last_day and day == pre_day:        # 不是最后一个重复日
+                        d[val_text] = val
+
+                    elif day == last_day and day != pre_day:        # 最后一个重复日
+                        d[val_text] = val
+                        ls = sorted(d.items(), key = lambda kv:(kv[1], kv[0]))    # 字典排序
+                        ll = []     # lable
+                        lv = []     # value
+                        lvc = []    # value change
+                        for l, v in ls:
+                            ll.append(l)
+                            lv.append(v)
+
+                        k = 500
+                        lvc.append(lv[0])
+                        for i in range(1, len(lv)):
+                            print(i, lv[i] )
+                            if lv[i] - lv[i-1] < 500:
+                                print(i, '< 500')
+                                lvc.append(lv[i] + k)
+                                k += 500
+                            else:
+                                lvc.append(lv[i])
+                                k = 500
+
+                            
+
+                            if j in [1, 2, 3, 4]:
+                                for label, val, val_c in zip(ll, lv, lvc):
+
+                                    plt.plot(t, val, marker = '$\downarrow$', color = 'k')
+                                    plt.text(t, val_c, label, horizontalalignment='center', 
+                                                verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 45)
+                            else: 
+                                plt.plot(t, val, marker = '2', color = 'gray')
+                                plt.text(t, val, val_text, horizontalalignment='center', 
+                                            verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = -45)
+
+                                last_day = day
+
+
+
+
+                              
+            
+
+
+
+    
+    
 
 
 def plot_datas(df_vbalance, df_abalance):
@@ -446,6 +532,7 @@ def plot_datas(df_vbalance, df_abalance):
     plot_abalance(df_abalance, dates)
 
     # 3. label
+    plot_label(df)
     
 
 

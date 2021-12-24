@@ -343,13 +343,13 @@ def plot_vbalance(df_vbalance, dates):
                 marker='o', markersize = 5, label = '支出')
 
     rijun = df['日均']
-    rijun *= 1000
+    rijun *= 10
     plt.plot(time, rijun,'--',  c=seaborn.xkcd_rgb['mid blue'],   linewidth=1.5, 
                 marker='o', markersize = 5, alpha = 0.4, label = '日均')
 
     yingyu = df['盈余']
-    plt.plot(time, yingyu, '-.', c = 'cyan',
-                marker='o', markersize = 5, alpha = 1, label = '盈余')  # c = seaborn.xkcd_rgb['minty green'], 
+    plt.plot(time, yingyu, '-.', c = 'yellowgreen',
+                marker='o', markersize = 5, alpha = 1, label = '盈余')  # c = seaborn.xkcd_rgb['minty green'],   cyan
 
 
 def plot_abalance(df_abalance, dates):
@@ -373,8 +373,8 @@ def plot_abalance(df_abalance, dates):
                 marker = '$y$', markersize=4.5, drawstyle='steps-post', label = '余额宝')
 
     cash = df['现金']
-    plt.plot(time, cash, linestyle='-', linewidth=1, c = 'lawngreen',
-                marker = '$c$', markersize=4.5, label = '现金')
+    plt.plot(time, cash, linestyle='-', linewidth=1, c = 'gold',
+                marker = '$c$', markersize=4.5, label = '现金')   #  c = 'lawngreen',
 
 
     # 信用卡   -----------------------------
@@ -393,14 +393,14 @@ def plot_abalance(df_abalance, dates):
                 marker = '$b$', markersize=4.5, drawstyle='steps-post', label = '白条')
 
     xinyong = df['信用消费']
-    plt.plot(time, xinyong, linestyle='-', linewidth=2, c = 'tan',
-                marker = '$x$', markersize=6, label = '信用消费')
+    plt.plot(time, xinyong, linestyle='-', linewidth=2, c = 'royalblue',
+                marker = '$x$', markersize=6, label = '信用消费')   # tan
 
 
     #-----账户总额--------------------------
     zonge = df['账户总额']
-    plt.plot(time, zonge, linewidth = 2, c = 'gold', 
-                marker = '*', markersize=6, label = '账户总额')
+    plt.plot(time, zonge, linewidth = 2, c = 'orangered', 
+                marker = '*', markersize=6, label = '账户总额')  
 
 
 def plot_label(df):
@@ -446,7 +446,7 @@ def plot_label(df):
                         else: 
                             plt.plot(t, val, marker = '>', color = 'gray', markersize = 8)
                             plt.text(t, val, val_text, horizontalalignment='center', 
-                                        verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 280)
+                                        verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 10)
 
                         last_day = day
                 
@@ -500,27 +500,24 @@ def plot_label(df):
 
                         i = 0
                         for j in lj:
+                            j = int(j)
                             if j in [1, 2, 3, 4]:
-                                plt.plot(t, lv[i], marker = '$\downarrow$', color = 'k')
+                                plt.plot(t, lv[i], marker = '$\downarrow$', color = 'dimgrey', markersize=10, alpha = 1)
                                 plt.text(t, lvc[i], llabel[i], horizontalalignment='center', 
                                                 verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 45)
-                            else: 
-                                plt.plot(t, lv[i], marker = '2', color = 'gray')
+                            elif j == 6:
+                                plt.plot(t, lv[i], marker = '$\heartsuit$', color = 'red', markersize = 10)
                                 plt.text(t, lvc[i], llabel[i], horizontalalignment='center', 
-                                            verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = -45)
+                                            verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 0)     
+                            else: 
+                                plt.plot(t, lv[i], marker = '>', color = 'gray')
+                                plt.text(t, lvc[i], llabel[i], horizontalalignment='center', 
+                                            verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 10)
                             i += 1
                         last_day = day
 
 
                               
-            
-
-
-
-    
-    
-
-
 def plot_datas(df_vbalance, df_abalance):
     print('plot_datas')
     

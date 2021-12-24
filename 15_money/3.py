@@ -265,7 +265,8 @@ def to_df_balance (df_day):
     for item in df_day['日期']:
         #days.append(item - (df_day[0] - 1))
         #days = int(item * 100  - (df_day['日期'][0] * 100 - 1))
-        gap = dt.datetime.strptime(str(item), '%m.%d') - dt.datetime.strptime(str(df_day['日期'][0]), '%m.%d')
+        #gap = dt.datetime.strptime(str(item), '%m.%d') - dt.datetime.strptime(str(df_day['日期'][0]), '%m.%d')
+        gap = dt.datetime.strptime("{0:.2f}".format(item), '%m.%d') - dt.datetime.strptime("{0:.2f}".format(df_day['日期'][0]), '%m.%d')
         days = gap.days + 1
         print('expend[i]  days  ', expend[i], days)
         day_aver.append(int(expend[i] / days))
@@ -427,7 +428,7 @@ def plot_label(df):
                         pre_day =  df['日期'][i + 1]
                     except:
                         pre_day = 0
-                    t = dt.datetime.strptime(year + str(day), '%Y %m.%d')
+                    t = dt.datetime.strptime(year + "{0:.2f}".format(day), '%Y %m.%d')
 
                     print(last_day, day, pre_day)
                     # ------处理打印--------------------------------------------
@@ -537,7 +538,7 @@ def plot_datas(df_vbalance, df_abalance):
     ''' 处理日期 '''
     int_dates = df_vbalance.index.values
     year = '2021 '   # 2021 12.16
-    dates = [dt.datetime.strptime(year + str(c), '%Y %m.%d') for c in int_dates]
+    dates = [dt.datetime.strptime(year + "{0:.2f}".format(c), '%Y %m.%d') for c in int_dates]
     #print(dates)
 
 
@@ -668,5 +669,4 @@ if __name__ == '__main__':
     print(df_abalance)
 
     # 5. 画图
-
     plot_datas(df_vbalance, df_abalance)

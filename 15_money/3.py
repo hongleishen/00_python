@@ -402,6 +402,8 @@ def plot_abalance(df_abalance, dates):
 
 
 def plot_label(df):
+    print('plot_label')
+
     last_day = 0
     pre_day = 0
     d = {}
@@ -412,18 +414,23 @@ def plot_label(df):
                 label = df.iloc[i][j][0]
                 if label != '被动':
 
+
+
                     val = df.iloc[i][j][1]
                     val_text = df.iloc[i][j][0] + str(val)
 
                     year = '2021 '
                     day = df['日期'][i]
                     try:
-                        pre_day =  df['日期'][i + i]
+                        pre_day =  df['日期'][i + 1]
                     except:
                         pre_day = 0
                     t = dt.datetime.strptime(year + str(day), '%Y %m.%d')
 
+                    print(last_day, day, pre_day)
+                    # ------处理打印--------------------------------------------
                     if day != last_day and day != pre_day:      # 相邻两个日期不同, 本日期只有一行
+                        print("1. 相邻两个日期不同, 本日期只有一行")
                         # 画图
                         if j in [1, 2, 3, 4]:
                             plt.plot(t, val, marker = '$\downarrow$', color = 'k')
@@ -434,14 +441,23 @@ def plot_label(df):
                             plt.text(t, val, val_text, horizontalalignment='center', 
                                         verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = -45)
 
-                            last_day = day
+                        last_day = day
                 
-                    elif day == last_day and day == pre_day:        # 不是最后一个重复日
+                    elif day == pre_day:        # 不是最后一个重复日
+                        print('2 不是最后一个重复日')
+                        val_text = str(j) + '_' + val_text
                         d[val_text] = val
+                        last_day = day
 
                     elif day == last_day and day != pre_day:        # 最后一个重复日
+                        print('3. 最后一个重复日')
+                        val_text = str(j) + '_' + val_text
                         d[val_text] = val
+                        print(d)
+
                         ls = sorted(d.items(), key = lambda kv:(kv[1], kv[0]))    # 字典排序
+                        d = {}
+
                         ll = []     # lable
                         lv = []     # value
                         lvc = []    # value change
@@ -449,34 +465,44 @@ def plot_label(df):
                             ll.append(l)
                             lv.append(v)
 
-                        k = 500
+                        print('ll = ', ll)
+                        print('lv = ', lv )
+
+                        step = 1000
+                        k = step                         # 处理value相近的值
                         lvc.append(lv[0])
                         for i in range(1, len(lv)):
                             print(i, lv[i] )
                             if lv[i] - lv[i-1] < 500:
                                 print(i, '< 500')
                                 lvc.append(lv[i] + k)
-                                k += 500
+                                k += step
                             else:
                                 lvc.append(lv[i])
-                                k = 500
+                                k = step
+                        print('lvc = ', lvc)
+                        
+                        lj = []
+                        llabel = []
+                        for item in ll:
+                            lj.append(item.split('_')[0])
+                            llabel.append(item.split('_')[1])
+                        print('lj = ', lj, '\nllabel = ', llabel)
 
-                            
+                    
 
+                        i = 0
+                        for j in lj:
                             if j in [1, 2, 3, 4]:
-                                for label, val, val_c in zip(ll, lv, lvc):
-
-                                    plt.plot(t, val, marker = '$\downarrow$', color = 'k')
-                                    plt.text(t, val_c, label, horizontalalignment='center', 
+                                plt.plot(t, lv[i], marker = '$\downarrow$', color = 'k')
+                                plt.text(t, lvc[i], llabel[i], horizontalalignment='center', 
                                                 verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 45)
                             else: 
-                                plt.plot(t, val, marker = '2', color = 'gray')
-                                plt.text(t, val, val_text, horizontalalignment='center', 
+                                plt.plot(t, lv[i], marker = '2', color = 'gray')
+                                plt.text(t, lvc[i], llabel[i], horizontalalignment='center', 
                                             verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = -45)
-
-                                last_day = day
-
-
+                            i += 1
+                        last_day = day
 
 
                               

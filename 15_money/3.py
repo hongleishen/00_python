@@ -148,6 +148,7 @@ def every_record_to_one_doubule_entry_account_line(datas, fdatas):
                 
                 print('--new_item = ', new_item)
 
+                # 计算 被动账户 数值
                 # 账户 间  都相反
                 if new_item[0] in laccout and new_item[3] in laccout:
                     # 1.        a <--> a
@@ -342,6 +343,7 @@ def plot_vbalance(df_vbalance, dates):
                 marker='o', markersize = 5, label = '支出')
 
     rijun = df['日均']
+    rijun *= 1000
     plt.plot(time, rijun,'--',  c=seaborn.xkcd_rgb['mid blue'],   linewidth=1.5, 
                 marker='o', markersize = 5, alpha = 0.4, label = '日均')
 
@@ -417,7 +419,7 @@ def plot_label(df):
 
 
                     val = df.iloc[i][j][1]
-                    val_text = df.iloc[i][j][0] + str(val)
+                    val_text = df.iloc[i][j][0] + ' ' + str(val)
 
                     year = '2021 '
                     day = df['日期'][i]
@@ -433,13 +435,18 @@ def plot_label(df):
                         print("1. 相邻两个日期不同, 本日期只有一行")
                         # 画图
                         if j in [1, 2, 3, 4]:
-                            plt.plot(t, val, marker = '$\downarrow$', color = 'k')
+                            plt.plot(t, val, marker = '$\downarrow$', color = 'dimgrey', markersize=10, alpha = 1)
                             plt.text(t, val, val_text, horizontalalignment='center', 
                                         verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 45)
-                        else: 
-                            plt.plot(t, val, marker = '2', color = 'gray')
+                        elif j == 6:
+                            plt.plot(t, val, marker = '$\heartsuit$', color = 'red', markersize = 10)
                             plt.text(t, val, val_text, horizontalalignment='center', 
-                                        verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = -45)
+                                        verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 0)                     
+
+                        else: 
+                            plt.plot(t, val, marker = '>', color = 'gray', markersize = 8)
+                            plt.text(t, val, val_text, horizontalalignment='center', 
+                                        verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 280)
 
                         last_day = day
                 

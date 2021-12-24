@@ -430,10 +430,10 @@ def plot_label(df):
                         pre_day = 0
                     t = dt.datetime.strptime(year + "{0:.2f}".format(day), '%Y %m.%d')
 
-                    print(last_day, day, pre_day)
+                    #print(last_day, day, pre_day)
                     # ------处理打印--------------------------------------------
                     if day != last_day and day != pre_day:      # 相邻两个日期不同, 本日期只有一行
-                        print("1. 相邻两个日期不同, 本日期只有一行")
+                        #print("1. 相邻两个日期不同, 本日期只有一行")
                         # 画图
                         if j in [1, 2, 3, 4]:
                             plt.plot(t, val, marker = '$\downarrow$', color = 'dimgrey', markersize=10, alpha = 1)
@@ -452,16 +452,16 @@ def plot_label(df):
                         last_day = day
                 
                     elif day == pre_day:        # 不是最后一个重复日
-                        print('2 不是最后一个重复日')
+                        #print('2 不是最后一个重复日')
                         val_text = str(j) + '_' + val_text
                         d[val_text] = val
                         last_day = day
 
                     elif day == last_day and day != pre_day:        # 最后一个重复日
-                        print('3. 最后一个重复日')
+                        #print('3. 最后一个重复日')
                         val_text = str(j) + '_' + val_text
                         d[val_text] = val
-                        print(d)
+                        #print(d)
 
                         ls = sorted(d.items(), key = lambda kv:(kv[1], kv[0]))    # 字典排序
                         d = {}
@@ -473,29 +473,29 @@ def plot_label(df):
                             ll.append(l)
                             lv.append(v)
 
-                        print('ll = ', ll)
-                        print('lv = ', lv )
+                        #print('ll = ', ll)
+                        #print('lv = ', lv )
 
                         step = 1000
                         k = step                         # 处理value相近的值
                         lvc.append(lv[0])
                         for i in range(1, len(lv)):
-                            print(i, lv[i] )
+                            #print(i, lv[i] )
                             if lv[i] - lv[i-1] < 500:
-                                print(i, '< 500')
+                                #print(i, '< 500')
                                 lvc.append(lv[i] + k)
                                 k += step
                             else:
                                 lvc.append(lv[i])
                                 k = step
-                        print('lvc = ', lvc)
+                        #print('lvc = ', lvc)
                         
                         lj = []
                         llabel = []
                         for item in ll:
                             lj.append(item.split('_')[0])
                             llabel.append(item.split('_')[1])
-                        print('lj = ', lj, '\nllabel = ', llabel)
+                        #print('lj = ', lj, '\nllabel = ', llabel)
 
                     
 

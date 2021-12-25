@@ -16,9 +16,9 @@ def is_number(s):
 
     return False
 
-
-def to_day_datas():
-    fin = open("3.txt", encoding='utf-8')
+#  [[11.15, ['余额宝', '对账', '4800', 'income']], [11.16, ['日常', '火锅', '138'], ['日常', '洗发水', '200']]
+def to_day_datas(dir):
+    fin = open(dir, encoding='utf-8')
     input_file = fin.read()
     file_lines = input_file.split("\n")
 
@@ -28,18 +28,27 @@ def to_day_datas():
     line_source = []
     line_process = []
 
+    t = time.ctime(os.path.getatime(dir))
+    year = t.split(' ')[4]
+    #print(dir, ' get year = %s\n' %year)
+
     for line in file_lines:
         line = line.strip()
         #print("line :", line)
         if line == '' or line[0] == '#':
             #print("continue #")
             continue
+
+        if line[0] == '年':
+            year = line[1:].strip()
+            #print('year = ', year)
+            continue
         
         # 处理日期
         if (is_number(line)):
             if (day_flag == 0):
                 #print('day_flag = ', day_flag)
-                l_day.append(float(line))
+                l_day.append(year + '.' + line)
                 day_flag = 1
 
             elif day_flag == 1:
@@ -48,7 +57,7 @@ def to_day_datas():
                 l_day = []
 
                 # ---new line-----
-                l_day.append(float(line))
+                l_day.append(year + '.' + line)       # l_day 是 一天的所有数据
 
         # 处理 数据
         else:
@@ -263,10 +272,7 @@ def to_df_balance (df_day):
     days = 0
     i = 0
     for item in df_day['日期']:
-        #days.append(item - (df_day[0] - 1))
-        #days = int(item * 100  - (df_day['日期'][0] * 100 - 1))
-        #gap = dt.datetime.strptime(str(item), '%m.%d') - dt.datetime.strptime(str(df_day['日期'][0]), '%m.%d')
-        gap = dt.datetime.strptime("{0:.2f}".format(item), '%m.%d') - dt.datetime.strptime("{0:.2f}".format(df_day['日期'][0]), '%m.%d')
+        gap = dt.datetime.strptime(item, '%Y.%m.%d') - dt.datetime.strptime(df_day['日期'][0], '%Y.%m.%d')
         days = gap.days + 1
         #print('expend[i]  days  ', expend[i], days)
         day_aver.append(int(expend[i] / days))
@@ -422,13 +428,12 @@ def plot_label(df):
                     val = df.iloc[i][j][1]
                     val_text = df.iloc[i][j][0] + ' ' + str(val)
 
-                    year = '2021 '
                     day = df['日期'][i]
                     try:
                         pre_day =  df['日期'][i + 1]
                     except:
                         pre_day = 0
-                    t = dt.datetime.strptime(year + "{0:.2f}".format(day), '%Y %m.%d')
+                    t = dt.datetime.strptime(day, '%Y.%m.%d')
 
                     #print(last_day, day, pre_day)
                     # ------处理打印--------------------------------------------
@@ -536,9 +541,8 @@ def plot_datas(df_vbalance, df_abalance):
     #plt.subplots_adjust(right=0.8)
     
     ''' 处理日期 '''
-    int_dates = df_vbalance.index.values
-    year = '2021 '   # 2021 12.16
-    dates = [dt.datetime.strptime(year + "{0:.2f}".format(c), '%Y %m.%d') for c in int_dates]
+    riqi = df_vbalance.index.values
+    dates = [dt.datetime.strptime(c, '%Y.%m.%d') for c in riqi]
     #print(dates)
 
 
@@ -598,6 +602,7 @@ if __name__ == '__main__':
     import seaborn
 
     import sys
+    import os
     # %matplotlib inline
     import matplotlib
     import matplotlib.pyplot as plt
@@ -607,7 +612,6 @@ if __name__ == '__main__':
     import datetime as dt
     import time
 
-    year = 2021
     #ditem = {'extera': 10, 'fixed': 11, 'douyin': 12}
     #print(ditem)
     #time = []
@@ -628,36 +632,66 @@ if __name__ == '__main__':
     cl.insert(0, '日期')
     row_account = lvirt + laccout
 
-    datas = []
-    fdatas = []
-    # 1. 读入数据， 拆分好日期
+
+
+
+
+    # 1. file 读入数据， 拆分好日期
     print('\n  ** setp 1. to_day_datas ^^^^^')
-    to_day_datas()
-    #for item in datas:
-    #    print(item, '\n')
+    # datas内容：  日期 及 此日期 记录的list 组成的list 
+    # [ [11.15, ['余额宝', '对账', '4800', 'income']], 
+    #   [11.16, ['日常', '火锅', '138'], ['日常', '洗发水', '200'],
+    #   ...
+    #  ]
+    datas = []
+    try:
+        dir = sys.argv[1]
+    except:
+        dir = '3.txt'
+
+    to_day_datas(dir)
+
+    # sys.exit(0)
+    print('datas = \n', datas)
+
+    
 
     # 2. 每条记录，变成 df的一行，用贷记记账
+    # fdatas 贷记记账法转化过后的数据
+    #[  ['2021.11.15', 0, 0, 0, 0, 0, ['被动', 4800], 0, 0, 0, ['对账', 4800], 0, 0, 0, 0, 0], 
+    #   ['2021.11.16', ['火锅', 138], 0, 0, 0, 0, 0, 0, 0, 0, 0, ['被动', 138], 0, 0, 0, 0], 
+    #   ... 
+    # ]
+    fdatas = []
     print('\n\n   **setp 2. to_doubule_entry_account ^^^^ ')
     every_record_to_one_doubule_entry_account_line(datas, fdatas)
     # print("***********************************")
-    #for item in fdatas:
+    # for item in fdatas:
     #    print(item, '\n')
+ 
 
-    # 3. 组成df
+
+    # 3. 贷记记账文本   组成df
+    #              日期           日常         额外 抖音 固定         vcheck        income  vlend 招商 平安        余额宝         农商 花呗       平安信  微粒          白条
+    # 0   2021.11.15              0            0    0    0              0  [被动, 4800]      0    0    0  [对账, 4800]            0    0            0     0             0
+    # 1   2021.11.16    [火锅, 138]            0    0    0              0             0      0    0    0             0  [被动, 138]    0            0     0             0
+
     print('\n\n    **step 3. df 带label')
-    pd.set_option('display.unicode.ambiguous_as_wide', True)
+    pd.set_option('display.unicode.ambiguous_as_wide', True)    # 支持中文
     pd.set_option('display.unicode.east_asian_width', True)
-    pd.set_option('display.width', 300)         # 设置打印宽度(**重要**)
+    pd.set_option('display.width', 300)         # 设置打印宽度(**重要**)    打印对齐
     # df2 = pd.DataFrame(data=data, index=index, columns = columns)
     df = pd.DataFrame(data = fdatas, columns = cl)
     print('df = \n', df)
 
-    # 4. df 相同日期合并， 祛除label
-    print("\n\n 4. df_stat 不带label")
-    #df = df[df['日期'] == 11.16]
-    
+
+
+    # 4. df 相同日合并， 祛除label
+    print("\n\n 4. df 相同日合并， 祛除label")
     df_day = to_df_daysum(df)
     print('df_day = \n', df_day)
+
+
 
     # 5. df_balance ;  balance 余额
     print('\n\n **step 5:  df_stat 每个账户余额 及 类型余额')

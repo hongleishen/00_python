@@ -307,7 +307,15 @@ def to_df_balance(df_day):
     df_vbalance['日期'] = df_day['日期']
     df_vbalance = df_vbalance.set_index('日期')
     df_vbalance['vcheck'][0] = 0
-    #print(df_vbalance, '\n')     
+    print('df_vbalance =\n', df_vbalance)
+
+    # 归 10000 化
+    for colum in df_vbalance.columns:
+        if df_vbalance[colum].max() > 10000 or df_vbalance[colum].min() < -10000:
+            df_vbalance[colum] = df_vbalance[colum]/10
+            print('df_vbalance 归 1000 化: ' + colum)
+
+      
 
   
     # 2. -------- df_abalance -----------
@@ -330,7 +338,13 @@ def to_df_balance(df_day):
     #df_abalance = pd.merge(df_abalance_cuxu, df_abalance_xinyong, on = index)  # df_abalance
     df_abalance = pd.concat([df_abalance_cuxu, df_abalance_xinyong], axis = 1)
     df_abalance = df_abalance.set_index(df_day['日期'])
-    #print(df_abalance)
+    print('df_abalance = \n', df_abalance)
+    # 归 10000 化
+    for colum in df_abalance.columns:
+        if df_abalance[colum].max() > 10000 or df_abalance[colum].min() < -10000:
+            df_abalance[colum] = df_abalance[colum]/10
+            print('df_abalance 归 1000 化: ' + colum)
+    
     
     return df_vbalance, df_abalance
 
@@ -366,6 +380,8 @@ def plot_vbalance(df_vbalance, dates):
     #plt.plot(time, ri_chang, ':', color='b', linewidth=0.5, marker='o', markersize=1.5, label = '日常')
     plt.plot(time, ri_chang, linestyle=':', linewidth=0.5, c = seaborn.xkcd_rgb['bright blue'], 
                 marker = '$r$', markersize=4.5, label = '日常')
+    #plt.text(t, lvc[i], llabel[i], horizontalalignment='center', 
+    #        verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 0) 
 
     ewai = df['额外']
     # plt.plot(time, ewai, marker = 'x', label = '额外')  #有线
@@ -590,12 +606,12 @@ def plot_datas(df_vbalance, df_abalance):
 
     """设置坐标轴的格式"""
     # 设置主刻度, 每6个月一个刻度
-    daygap = mdates.DayLocator(interval=7)
+    daygap = mdates.DayLocator(interval=1)
     ax.xaxis.set_major_locator(daygap)
 
     # 设置次刻度，每个月一个刻度
-    daygap = mdates.DayLocator(interval=1)
-    ax.xaxis.set_minor_locator(daygap)
+    #daygap = mdates.DayLocator(interval=1)
+    #ax.xaxis.set_minor_locator(daygap)
 
     xfmt = matplotlib.dates.DateFormatter('%Y %m.%d')   # 设置 x 坐标轴的刻度格式
     ax.xaxis.set_major_formatter(xfmt)
@@ -739,16 +755,16 @@ if __name__ == '__main__':
     print('\n\n **step 5:  df_stat 每个账户余额 及 类型余额')
     df_vbalance, df_abalance = to_df_balance(df_day)
 
-    print()
-    print('df_vbalance = \n', df_vbalance)
-    print()
-    print('df_abalance = \n', df_abalance)
+    #print()
+    #print('df_vbalance = \n', df_vbalance)
+    #print()
+    #print('df_abalance = \n', df_abalance)
 
     # 6. 本期结余处理, 写入到dir_out.txt文件中
     print('\n\n# 6. 本期结余处理, 写入到dir_out.txt文件中')
     process_current_balance(df_abalance)
 
 
-    sys.exit(0)
+    #sys.exit(0)
     # 7. 画图
     plot_datas(df_vbalance, df_abalance)

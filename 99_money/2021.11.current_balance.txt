@@ -3,7 +3,7 @@
 	招商	对账	0	vcheck
 	平安	对账	-150	vcheck
 	余额宝	对账	1862	vcheck
-	农商	对账	10320	vcheck
+	农商	对账	1032.0	vcheck
 	花呗	对账	-371	vcheck
 	平安信	对账	-150	vcheck
 	微粒	对账	0	vcheck

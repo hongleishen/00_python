@@ -647,7 +647,7 @@ if __name__ == '__main__':
     try:
         dir = sys.argv[1]
     except:
-        dir = '3.txt'
+        dir = '4.txt'
 
     to_day_datas(dir)
 

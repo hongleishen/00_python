@@ -21,6 +21,24 @@ def to_day_datas(dir):
     fin = open(dir, encoding='utf-8')
     input_file = fin.read()
     fin.close()
+
+    # 上期盈余
+    tmp = dir.replace('.txt', '')
+    cdate = dt.datetime.strptime(tmp, '%Y.%m')
+    date_before = cdate - relativedelta(months=1)
+    dir_before = date_before.strftime("%Y.%m") + '.current_balance.txt'
+    print('dir_before = ', dir_before)
+
+    try:
+        f_before = open(dir_before, encoding='utf-8')
+        before = f_before.read()
+        f_before.close()
+    except:
+        print("上期无盈余数据")
+        before = ''
+    
+    # 所有文本
+    input_file = before + input_file
     file_lines = input_file.split("\n")
 
     day_flag = 0
@@ -634,6 +652,7 @@ if __name__ == '__main__':
     import matplotlib.dates as mdates
 
     import datetime as dt
+    from dateutil.relativedelta import relativedelta
     import time
 
     #ditem = {'extera': 10, 'fixed': 11, 'douyin': 12}

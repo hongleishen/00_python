@@ -380,19 +380,23 @@ def plot_vbalance(df_vbalance, dates):
     #plt.plot(time, ri_chang, ':', color='b', linewidth=0.5, marker='o', markersize=1.5, label = '日常')
     plt.plot(time, ri_chang, linestyle=':', linewidth=0.5, c = seaborn.xkcd_rgb['bright blue'], 
                 marker = '$r$', markersize=4.5, label = '日常')
-    #plt.text(t, lvc[i], llabel[i], horizontalalignment='center', 
-    #        verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 0) 
+    plt.text(time[-1], ri_chang[-1], '日常', horizontalalignment='left', c = seaborn.xkcd_rgb['bright blue'],
+            verticalalignment='center', fontsize = 10, alpha = 0.8, rotation = -30) 
 
     ewai = df['额外']
     # plt.plot(time, ewai, marker = 'x', label = '额外')  #有线
     # plt.plot(time, ewai, 'x', label = '额外')  # 无线
-    plt.plot(time, ewai,linestyle=':', linewidth=0.45, c = seaborn.xkcd_rgb['blue blue'], 
+    plt.plot(time, ewai, linestyle=':', linewidth=0.45, c = seaborn.xkcd_rgb['blue blue'], 
                 marker = '$e$', markersize = 4, label = '额外')  # 无线
+    plt.text(time[-1], ewai[-1], '额外', horizontalalignment='left', c = seaborn.xkcd_rgb['blue blue'],
+            verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30) 
 
     douyin = df['抖音']
     #plt.plot(time, douyin, ':', label = '抖音')
     plt.plot(time, douyin, linestyle=':', linewidth=0.4, c = seaborn.xkcd_rgb['purpley blue'], 
                 marker = '$d$', markersize=4, label = '抖音')
+    plt.text(time[-1], douyin[-1], '抖音', horizontalalignment='left', c = seaborn.xkcd_rgb['purpley blue'], 
+            verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30)
 
     #guding = df['固定']
     #plt.plot(time, guding, ':', label = '固定')
@@ -406,16 +410,21 @@ def plot_vbalance(df_vbalance, dates):
     zhichu = df['支出']
     plt.plot(time, zhichu,    c = 'b',                        linewidth=2, 
                 marker='o', markersize = 5, label = '支出')
+    plt.text(time[-1], zhichu[-1], '支出', horizontalalignment='left',  c = 'b', 
+            verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30)
 
     rijun = df['日均']
     rijun *= 10
-    plt.plot(time, rijun,'--',  c=seaborn.xkcd_rgb['mid blue'],   linewidth=1.5, 
+    plt.plot(time, rijun,'--',  c = seaborn.xkcd_rgb['mid blue'],   linewidth=1.5, 
                 marker='o', markersize = 5, alpha = 0.4, label = '日均')
+    plt.text(time[-1], rijun[-1], '日均', horizontalalignment='left',c = seaborn.xkcd_rgb['mid blue'],
+            verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30)
 
     yingyu = df['盈余']
     plt.plot(time, yingyu, '-.', c = 'yellowgreen',
                 marker='o', markersize = 5, alpha = 1, label = '盈余')  # c = seaborn.xkcd_rgb['minty green'],   cyan
-
+    plt.text(time[-1], yingyu[-1], '盈余', horizontalalignment='left', c = 'yellowgreen',
+            verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30)
 
 def plot_abalance(df_abalance, dates):
     print(sys._getframe().f_code.co_name)
@@ -429,6 +438,7 @@ def plot_abalance(df_abalance, dates):
     zhaoshang = df['招商']
     plt.plot(time, zhaoshang, linestyle=':', linewidth=0.5,  color='lime', 
                 marker = '$z$', markersize=4.5, drawstyle='steps-post', label = '招商')
+
     pingan = df['平安']
     plt.plot(time, pingan, linestyle=':', linewidth=0.5, c = 'chartreuse',
                 marker = '$p$', markersize=4.5, drawstyle='steps-post', label = '平安')
@@ -436,16 +446,23 @@ def plot_abalance(df_abalance, dates):
     yuebao = df['余额宝']
     plt.plot(time, yuebao, linestyle=':', linewidth=0.5, c = 'lightgreen',
                 marker = '$y$', markersize=4.5, drawstyle='steps-post', label = '余额宝')
+    plt.text(time[-1], yuebao[-1], '余额宝', horizontalalignment='left',  c = 'lightgreen',
+            verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)
 
     cash = df['现金']
     plt.plot(time, cash, linestyle='-', linewidth=1, c = 'gold',
                 marker = '$c$', markersize=4.5, label = '现金')   #  c = 'lawngreen',
+    plt.text(time[-1], cash[-1], '现金', horizontalalignment='left', c = 'gold',
+            verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)
 
 
     # 信用卡   -----------------------------
     nongshang = df['农商']
     plt.plot(time, nongshang, linestyle=':', linewidth=0.5,  color='peru', 
         marker = '$n$', markersize=4.5, drawstyle='steps-post', label = '农商')
+    plt.text(time[-1], nongshang[-1], '农商', horizontalalignment='left', c = 'peru',
+            verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)    
+
     huabei = df['花呗']
     plt.plot(time, huabei, linestyle=':', linewidth=0.5, c = 'peru',
                 marker = '$h$', markersize=4.5, drawstyle='steps-post', label = '花呗')
@@ -460,12 +477,15 @@ def plot_abalance(df_abalance, dates):
     xinyong = df['信用消费']
     plt.plot(time, xinyong, linestyle='-', linewidth=2, c = 'royalblue',
                 marker = '$x$', markersize=6, label = '信用消费')   # tan
-
+    plt.text(time[-1], xinyong[-1], '信用消费', horizontalalignment='left', c = 'royalblue',
+            verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)
 
     #-----账户总额--------------------------
     zonge = df['账户总额']
     plt.plot(time, zonge, linewidth = 2, c = 'orangered', 
                 marker = '*', markersize=6, label = '账户总额')  
+    plt.text(time[-1], zonge[-1], '账户总额', horizontalalignment='left', c = 'orangered',
+            verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)
 
 
 def plot_label(df):

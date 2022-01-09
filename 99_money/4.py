@@ -730,6 +730,6 @@ if __name__ == '__main__':
     process_current_balance(df_abalance)
 
 
-    sys.exit(0)
+    #sys.exit(0)
     # 7. 画图
     plot_datas(df_vbalance, df_abalance)

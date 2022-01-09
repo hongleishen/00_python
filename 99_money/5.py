@@ -25,11 +25,11 @@ def to_day_datas(dir):
     # 上期盈余
     tmp = dir.replace(r'.txt', '')
     #tmp = dir.replace(r'.\', '')
-    print('tmp = ', tmp)
+    #print('tmp = ', tmp)
     cdate = dt.datetime.strptime(tmp, '%Y.%m')
     date_before = cdate - relativedelta(months=1)
     dir_before = date_before.strftime("%Y.%m") + '.current_balance.txt'
-    print('dir_before = ', dir_before)
+    #print('dir_before = ', dir_before)
 
     try:
         f_before = open(dir_before, encoding='utf-8')
@@ -40,11 +40,11 @@ def to_day_datas(dir):
         before = ''
     #before = ''
     # 所有文本
-    print('before = \n', before)
-    print('\nfin = \n', input_file)
+    #print('before = \n', before)
+    #print('\nfin = \n', input_file)
     input_file = before + input_file
 
-    print("\ninput_file = \n", input_file)
+    #print("\ninput_file = \n", input_file)
     file_lines = input_file.split("\n")
 
     day_flag = 0
@@ -114,6 +114,7 @@ def one_item_to_one_line(item, new_day, time):
     new_day.insert(0, time)
     return new_day
 
+# 本函数中的 print可以都打开
 def every_record_to_one_doubule_entry_account_line(datas, fdatas):
     new_item = []
     new_day = []
@@ -125,7 +126,7 @@ def every_record_to_one_doubule_entry_account_line(datas, fdatas):
 
         #  [11.17, ['计数器', '20', '花呗'], ['抖音', '150'], ['约会', '130']]
         for item in day:  # item 每个日常记录
-            print('item =', item)
+            #print('item =', item)
 
             if data_flag:   # 第一个 item 是日期
                 data_flag = 0
@@ -173,14 +174,12 @@ def every_record_to_one_doubule_entry_account_line(datas, fdatas):
                 elif len(item) > 4:
                     print("Error input, should be: 账户 条目 金额 账户")
                 
-                # print(item)
-                
                 new_item.append(item[0])
                 new_item.append(item[1])
                 new_item.append(int(item[2]))
                 new_item.append(item[3])
                 
-                print('--new_item = ', new_item)
+                #print('--new_item = ', new_item)
 
                 # 计算 被动账户 数值
                 # 账户 间  都相反
@@ -204,10 +203,10 @@ def every_record_to_one_doubule_entry_account_line(datas, fdatas):
                         else:
                             new_item.append(-new_item[2])
 
-                print('==new_item = ', new_item)
+                #print('==new_item = ', new_item)
 
                 one_item_to_one_line(new_item, new_day, time)                
-                print(' ===============new_day', new_day, '===end============\n')
+                #print(' ===============new_day', new_day, '===end============\n')
                 new_item = []
 
                 fdatas.append(new_day)

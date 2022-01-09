@@ -448,7 +448,6 @@ def plot_label(df):
                 if label != '被动':
 
 
-
                     val = df.iloc[i][j][1]
                     val_text = df.iloc[i][j][0] + ' ' + str(val)
 

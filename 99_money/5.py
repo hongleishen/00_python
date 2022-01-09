@@ -44,7 +44,7 @@ def to_day_datas(dir):
     #print('\nfin = \n', input_file)
     input_file = before + input_file
 
-    #print("\ninput_file = \n", input_file)
+    print("\ninput_file = \n", input_file)
     file_lines = input_file.split("\n")
 
     day_flag = 0
@@ -403,7 +403,7 @@ def plot_vbalance(df_vbalance, dates):
     # plt.plot(time, ewai, marker = 'x', label = '额外')  #有线
     # plt.plot(time, ewai, 'x', label = '额外')  # 无线
     plt.plot(time, ewai, linestyle=':', linewidth=0.45, c = seaborn.xkcd_rgb['blue blue'], 
-                marker = '$e$', markersize = 4, label = '额外')  # 无线
+                marker = '$e$', markersize = 5, label = '额外')  # 无线
     if df_vbalance_r['额外'].max() > 10000:
         st = '额外' + '/10'
     else:
@@ -414,7 +414,7 @@ def plot_vbalance(df_vbalance, dates):
     douyin = df['抖音']
     #plt.plot(time, douyin, ':', label = '抖音')
     plt.plot(time, douyin, linestyle=':', linewidth=0.4, c = seaborn.xkcd_rgb['purpley blue'], 
-                marker = '$d$', markersize=4, label = '抖音')
+                marker = '$d$', markersize=5, label = '抖音')
     if df_vbalance_r['抖音'].max() > 10000:
         st = '抖音' + '/10'
     else:
@@ -450,6 +450,7 @@ def plot_vbalance(df_vbalance, dates):
     plt.text(time[-1], rijun[-1], st, horizontalalignment='left',c = seaborn.xkcd_rgb['mid blue'],
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30)
 
+    '''
     yingyu = df['盈余']
     plt.plot(time, yingyu, '-.', c = 'yellowgreen',
                 marker='o', markersize = 5, alpha = 1, label = '盈余')  # c = seaborn.xkcd_rgb['minty green'],   cyan
@@ -459,6 +460,7 @@ def plot_vbalance(df_vbalance, dates):
         st = '盈余'
     plt.text(time[-1], yingyu[-1], st, horizontalalignment='left', c = 'yellowgreen',
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30)
+    '''
 
 def plot_abalance(df_abalance, dates):
     print(sys._getframe().f_code.co_name)
@@ -508,17 +510,21 @@ def plot_abalance(df_abalance, dates):
         st = '农商' 
     plt.text(time[-1], nongshang[-1], st, horizontalalignment='left', c = 'peru',
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)    
-
+    """
     huabei = df['花呗']
     plt.plot(time, huabei, linestyle=':', linewidth=0.5, c = 'peru',
                 marker = '$h$', markersize=4.5, drawstyle='steps-post', label = '花呗')
+    """
 
     # 平安信   额度太小 忽略
     # 微粒    很少用， 忽略，但文字表示
 
+
+    """
     baitiao = df['白条']
     plt.plot(time, baitiao, linestyle=':', linewidth=0.5,  color='darkkhaki', 
                 marker = '$b$', markersize=4.5, drawstyle='steps-post', label = '白条')
+    """
 
     xinyong = df['信用消费']
     plt.plot(time, xinyong, linestyle='-', linewidth=2, c = 'royalblue',
@@ -555,13 +561,19 @@ def plot_label(df):
                 label = df.iloc[i][j][0]
                 if label != '被动':
 
-
                     val = df.iloc[i][j][1]
+                    if val < 0:
+                        val = -val
+                    val_text = df.iloc[i][j][0] + ' ' + str(val)
+                    
                     if val > 10000:
                         val_text = df.iloc[i][j][0] + '/10' + ' ' + str(val)
                         val /= 10
                     else:
                         val_text = df.iloc[i][j][0] + ' ' + str(val)
+                    
+                    #print('\n i = %d, j = %d, val_text = %s, val = %d'
+                    #    %(i, j, val_text, val))
 
                     day = df['日期'][i]
                     try:
@@ -601,7 +613,7 @@ def plot_label(df):
                         #print('3. 最后一个重复日')
                         val_text = str(j) + '_' + val_text
                         d[val_text] = val
-                        #print(d)
+                        #print('d = \n', d)
 
                         ls = sorted(d.items(), key = lambda kv:(kv[1], kv[0]))    # 字典排序
                         d = {}
@@ -639,25 +651,26 @@ def plot_label(df):
 
                     
 
-                        i = 0
+                        k = 0
                         for j in lj:
-                            if lv[i] == 0:
+                            if lv[k] == 0:
+                                k += 1
                                 continue
 
                             j = int(j)
                             if j in [1, 2, 3, 4]:
-                                plt.plot(t, lv[i], marker = '$\downarrow$', color = 'dimgrey', markersize=10, alpha = 1)
-                                plt.text(t, lvc[i], llabel[i], horizontalalignment='center', 
+                                plt.plot(t, lv[k], marker = '$\downarrow$', color = 'dimgrey', markersize=10, alpha = 1)
+                                plt.text(t, lvc[k], llabel[k], horizontalalignment='center', 
                                                 verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 45)
                             elif j == 6:
-                                plt.plot(t, lv[i], marker = '$\heartsuit$', color = 'red', markersize = 10)
-                                plt.text(t, lvc[i], llabel[i], horizontalalignment='center', 
+                                plt.plot(t, lv[k], marker = '$\heartsuit$', color = 'red', markersize = 10)
+                                plt.text(t, lvc[k], llabel[k], horizontalalignment='center', 
                                             verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 0)     
                             else: 
-                                plt.plot(t, lv[i], marker = '>', color = 'gray')
-                                plt.text(t, lvc[i], llabel[i], horizontalalignment='center', 
+                                plt.plot(t, lv[k], marker = '>', color = 'gray')
+                                plt.text(t, lvc[k], llabel[k], horizontalalignment='center', 
                                             verticalalignment='bottom', fontsize = 10, alpha = 0.8, rotation = 10)
-                            i += 1
+                            k += 1
                         last_day = day
 
 
@@ -791,7 +804,7 @@ if __name__ == '__main__':
 
     
     print('datas = \n', datas)
-    # sys.exit(0)
+    #sys.exit(0)
 
     
 

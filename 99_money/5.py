@@ -23,7 +23,9 @@ def to_day_datas(dir):
     fin.close()
 
     # 上期盈余
-    tmp = dir.replace('.txt', '')
+    tmp = dir.replace(r'.txt', '')
+    #tmp = dir.replace(r'.\', '')
+    print('tmp = ', tmp)
     cdate = dt.datetime.strptime(tmp, '%Y.%m')
     date_before = cdate - relativedelta(months=1)
     dir_before = date_before.strftime("%Y.%m") + '.current_balance.txt'
@@ -36,9 +38,13 @@ def to_day_datas(dir):
     except:
         print("上期无盈余数据")
         before = ''
-    
+    #before = ''
     # 所有文本
+    print('before = \n', before)
+    print('\nfin = \n', input_file)
     input_file = before + input_file
+
+    print("\ninput_file = \n", input_file)
     file_lines = input_file.split("\n")
 
     day_flag = 0
@@ -306,8 +312,9 @@ def to_df_balance(df_day):
     df_vbalance['盈余'] = current_surplus
     df_vbalance['日期'] = df_day['日期']
     df_vbalance = df_vbalance.set_index('日期')
-    df_vbalance['vcheck'][0] = 0
-    print('df_vbalance =\n', df_vbalance)
+    #df_vbalance['vcheck'][0] = 0                    # 第一天 vcheck是上期结余
+    df_vbalance_r = df_vbalance.copy()
+    #print('df_vbalance =\n', df_vbalance)
 
     # 归 10000 化
     for colum in df_vbalance.columns:
@@ -338,7 +345,8 @@ def to_df_balance(df_day):
     #df_abalance = pd.merge(df_abalance_cuxu, df_abalance_xinyong, on = index)  # df_abalance
     df_abalance = pd.concat([df_abalance_cuxu, df_abalance_xinyong], axis = 1)
     df_abalance = df_abalance.set_index(df_day['日期'])
-    print('df_abalance = \n', df_abalance)
+    df_abalance_r = df_abalance.copy()
+    #print('df_abalance = \n', df_abalance)
     # 归 10000 化
     for colum in df_abalance.columns:
         if df_abalance[colum].max() > 10000 or df_abalance[colum].min() < -10000:
@@ -346,7 +354,7 @@ def to_df_balance(df_day):
             print('df_abalance 归 1000 化: ' + colum)
     
     
-    return df_vbalance, df_abalance
+    return df_vbalance, df_vbalance_r, df_abalance, df_abalance_r
 
 
 def process_current_balance(df_abalance):
@@ -356,12 +364,17 @@ def process_current_balance(df_abalance):
     f_out = open(dir_out, 'w', encoding='utf-8')
 
     date = df_abalance.index.values[-1]
-    print(date)
-    f_out.write("{}\n".format(date))
+    tmp = date.split('.')
+    year = tmp[0]
+    d = date.split('.')[1] + '.' + date.split('.')[2] + '\n'
 
+    #f_out.write("{}\n".format(date))
+    f_out.write('年 ' + year + '\n')
+    f_out.write(d)
+    
     for item in laccout:
         amount = df_abalance[item][-1]
-        st = '\t' + item + '\t' + '对账' + '\t' + str(amount) + '\t' + 'vcheck'
+        st = '    ' + item + '    ' + '对账' + '    ' + str(amount) + '    ' + 'vcheck'
         print(st)
         f_out.write("{}\n".format(st))
 
@@ -380,7 +393,11 @@ def plot_vbalance(df_vbalance, dates):
     #plt.plot(time, ri_chang, ':', color='b', linewidth=0.5, marker='o', markersize=1.5, label = '日常')
     plt.plot(time, ri_chang, linestyle=':', linewidth=0.5, c = seaborn.xkcd_rgb['bright blue'], 
                 marker = '$r$', markersize=4.5, label = '日常')
-    plt.text(time[-1], ri_chang[-1], '日常', horizontalalignment='left', c = seaborn.xkcd_rgb['bright blue'],
+    if df_vbalance_r['日常'].max() > 10000:
+        st = '日常' + '/10'
+    else:
+        st = '日常'
+    plt.text(time[-1], ri_chang[-1], st, horizontalalignment='left', c = seaborn.xkcd_rgb['bright blue'],
             verticalalignment='center', fontsize = 10, alpha = 0.8, rotation = -30) 
 
     ewai = df['额外']
@@ -388,14 +405,22 @@ def plot_vbalance(df_vbalance, dates):
     # plt.plot(time, ewai, 'x', label = '额外')  # 无线
     plt.plot(time, ewai, linestyle=':', linewidth=0.45, c = seaborn.xkcd_rgb['blue blue'], 
                 marker = '$e$', markersize = 4, label = '额外')  # 无线
-    plt.text(time[-1], ewai[-1], '额外', horizontalalignment='left', c = seaborn.xkcd_rgb['blue blue'],
+    if df_vbalance_r['额外'].max() > 10000:
+        st = '额外' + '/10'
+    else:
+        st = '额外'
+    plt.text(time[-1], ewai[-1], st, horizontalalignment='left', c = seaborn.xkcd_rgb['blue blue'],
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30) 
 
     douyin = df['抖音']
     #plt.plot(time, douyin, ':', label = '抖音')
     plt.plot(time, douyin, linestyle=':', linewidth=0.4, c = seaborn.xkcd_rgb['purpley blue'], 
                 marker = '$d$', markersize=4, label = '抖音')
-    plt.text(time[-1], douyin[-1], '抖音', horizontalalignment='left', c = seaborn.xkcd_rgb['purpley blue'], 
+    if df_vbalance_r['抖音'].max() > 10000:
+        st = '抖音' + '/10'
+    else:
+        st = '抖音'            
+    plt.text(time[-1], douyin[-1], st, horizontalalignment='left', c = seaborn.xkcd_rgb['purpley blue'], 
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30)
 
     #guding = df['固定']
@@ -410,20 +435,30 @@ def plot_vbalance(df_vbalance, dates):
     zhichu = df['支出']
     plt.plot(time, zhichu,    c = 'b',                        linewidth=2, 
                 marker='o', markersize = 5, label = '支出')
-    plt.text(time[-1], zhichu[-1], '支出', horizontalalignment='left',  c = 'b', 
+    if df_vbalance_r['支出'].max() > 10000:
+        print("df_vbalance_r['支出'].max() ", df_vbalance_r['支出'].max())
+        st = '支出' + '/10'
+    else:
+        st = '支出' 
+    plt.text(time[-1], zhichu[-1], st, horizontalalignment='left',  c = 'b', 
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30)
 
     rijun = df['日均']
     rijun *= 10
     plt.plot(time, rijun,'--',  c = seaborn.xkcd_rgb['mid blue'],   linewidth=1.5, 
                 marker='o', markersize = 5, alpha = 0.4, label = '日均')
-    plt.text(time[-1], rijun[-1], '日均', horizontalalignment='left',c = seaborn.xkcd_rgb['mid blue'],
+    st = '日均*10'
+    plt.text(time[-1], rijun[-1], st, horizontalalignment='left',c = seaborn.xkcd_rgb['mid blue'],
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30)
 
     yingyu = df['盈余']
     plt.plot(time, yingyu, '-.', c = 'yellowgreen',
                 marker='o', markersize = 5, alpha = 1, label = '盈余')  # c = seaborn.xkcd_rgb['minty green'],   cyan
-    plt.text(time[-1], yingyu[-1], '盈余', horizontalalignment='left', c = 'yellowgreen',
+    if df_vbalance_r['盈余'].max() > 10000 or df_vbalance_r['盈余'].min() < -10000:
+        st = '盈余' + '/10'
+    else:
+        st = '盈余'
+    plt.text(time[-1], yingyu[-1], st, horizontalalignment='left', c = 'yellowgreen',
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = -30)
 
 def plot_abalance(df_abalance, dates):
@@ -446,13 +481,21 @@ def plot_abalance(df_abalance, dates):
     yuebao = df['余额宝']
     plt.plot(time, yuebao, linestyle=':', linewidth=0.5, c = 'lightgreen',
                 marker = '$y$', markersize=4.5, drawstyle='steps-post', label = '余额宝')
-    plt.text(time[-1], yuebao[-1], '余额宝', horizontalalignment='left',  c = 'lightgreen',
+    if df_abalance_r['余额宝'].max() > 10000:
+        st = '余额宝' + '/10'
+    else:
+        st = '余额宝' 
+    plt.text(time[-1], yuebao[-1], st, horizontalalignment='left',  c = 'lightgreen',
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)
 
     cash = df['现金']
     plt.plot(time, cash, linestyle='-', linewidth=1, c = 'gold',
                 marker = '$c$', markersize=4.5, label = '现金')   #  c = 'lawngreen',
-    plt.text(time[-1], cash[-1], '现金', horizontalalignment='left', c = 'gold',
+    if df_abalance_r['现金'].max() > 10000:
+        st = '现金' + '/10'
+    else:
+        st = '现金' 
+    plt.text(time[-1], cash[-1], st, horizontalalignment='left', c = 'gold',
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)
 
 
@@ -460,7 +503,11 @@ def plot_abalance(df_abalance, dates):
     nongshang = df['农商']
     plt.plot(time, nongshang, linestyle=':', linewidth=0.5,  color='peru', 
         marker = '$n$', markersize=4.5, drawstyle='steps-post', label = '农商')
-    plt.text(time[-1], nongshang[-1], '农商', horizontalalignment='left', c = 'peru',
+    if df_abalance_r['农商'].max() > 10000:
+        st = '农商' + '/10'
+    else:
+        st = '农商' 
+    plt.text(time[-1], nongshang[-1], st, horizontalalignment='left', c = 'peru',
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)    
 
     huabei = df['花呗']
@@ -477,14 +524,22 @@ def plot_abalance(df_abalance, dates):
     xinyong = df['信用消费']
     plt.plot(time, xinyong, linestyle='-', linewidth=2, c = 'royalblue',
                 marker = '$x$', markersize=6, label = '信用消费')   # tan
-    plt.text(time[-1], xinyong[-1], '信用消费', horizontalalignment='left', c = 'royalblue',
+    if df_abalance_r['信用消费'].max() > 10000:
+        st = '信用消费' + '/10'
+    else:
+        st = '信用消费' 
+    plt.text(time[-1], xinyong[-1], st, horizontalalignment='left', c = 'royalblue',
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)
 
     #-----账户总额--------------------------
     zonge = df['账户总额']
     plt.plot(time, zonge, linewidth = 2, c = 'orangered', 
-                marker = '*', markersize=6, label = '账户总额')  
-    plt.text(time[-1], zonge[-1], '账户总额', horizontalalignment='left', c = 'orangered',
+                marker = '*', markersize=6, label = '账户总额')
+    if df_abalance_r['账户总额'].max() > 10000 or df_abalance_r['账户总额'].min() < -10000:
+        st = '账户总额' + '/10'
+    else:
+        st = '账户总额'
+    plt.text(time[-1], zonge[-1], st, horizontalalignment='left', c = 'orangered',
             verticalalignment='center', fontsize = 10, alpha = 1, rotation = 45)
 
 
@@ -729,8 +784,9 @@ if __name__ == '__main__':
 
     to_day_datas(dir)
 
-    # sys.exit(0)
+    
     print('datas = \n', datas)
+    # sys.exit(0)
 
     
 
@@ -767,22 +823,23 @@ if __name__ == '__main__':
     # 4. df 相同日合并， 祛除label
     print("\n\n 4. df 相同日合并， 祛除label")
     df_day = to_df_daysum(df)
+    df_day['vcheck'][0] = 0                    # 第一天 vcheck是上期结余
     print('df_day = \n', df_day)
 
 
 
     # 5. df_balance ;  balance 余额
     print('\n\n **step 5:  df_stat 每个账户余额 及 类型余额')
-    df_vbalance, df_abalance = to_df_balance(df_day)
+    df_vbalance,  df_vbalance_r, df_abalance, df_abalance_r = to_df_balance(df_day)
 
-    #print()
-    #print('df_vbalance = \n', df_vbalance)
-    #print()
-    #print('df_abalance = \n', df_abalance)
+    print()
+    print('df_vbalance_r = \n', df_vbalance_r)
+    print()
+    print('df_abalance_r = \n', df_abalance_r)
 
     # 6. 本期结余处理, 写入到dir_out.txt文件中
     print('\n\n# 6. 本期结余处理, 写入到dir_out.txt文件中')
-    process_current_balance(df_abalance)
+    process_current_balance(df_abalance_r)
 
 
     #sys.exit(0)

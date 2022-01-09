@@ -557,9 +557,12 @@ def plot_label(df):
                 if label != '被动':
 
 
-
                     val = df.iloc[i][j][1]
-                    val_text = df.iloc[i][j][0] + ' ' + str(val)
+                    if val > 10000:
+                        val_text = df.iloc[i][j][0] + '/10' + ' ' + str(val)
+                        val /= 10
+                    else:
+                        val_text = df.iloc[i][j][0] + ' ' + str(val)
 
                     day = df['日期'][i]
                     try:
@@ -639,6 +642,9 @@ def plot_label(df):
 
                         i = 0
                         for j in lj:
+                            if lv[i] == 0:
+                                continue
+
                             j = int(j)
                             if j in [1, 2, 3, 4]:
                                 plt.plot(t, lv[i], marker = '$\downarrow$', color = 'dimgrey', markersize=10, alpha = 1)

@@ -359,7 +359,7 @@ def to_df_balance(df_day):
 def process_current_balance(df_abalance):
     dir_out = dir.replace('.txt', '')
     dir_out = dir_out + '.current_balance' + '.txt'
-    print(dir_out)
+    #print(dir_out)
     f_out = open(dir_out, 'w', encoding='utf-8')
 
     date = df_abalance.index.values[-1]
@@ -374,7 +374,7 @@ def process_current_balance(df_abalance):
     for item in laccout:
         amount = df_abalance[item][-1]
         st = '    ' + item + '    ' + '对账' + '    ' + str(amount) + '    ' + 'vcheck'
-        print(st)
+        #print(st)
         f_out.write("{}\n".format(st))
 
     f_out.close()
@@ -719,10 +719,7 @@ def plot_datas(df_vbalance, df_abalance):
 
     # 3. label
     plot_label(df)
-    
 
-
-    # =============================================================================
 
     #plt.xlabel('riqi')
     #plt.ylabel('jine')
@@ -739,8 +736,14 @@ def plot_datas(df_vbalance, df_abalance):
     #ax.xaxis.set_major_locator(xmajorLocator)
     #plt.xticks(rotation = 45)
     
-    fig.autofmt_xdate() 
+    fig.autofmt_xdate()
+
+
+    dir_fig = dir.replace('.txt', '.png')
+    #dir_fig = dir_fig + '.current_bal' + '.txt'
+    #plt.savefig(dir_fig, dpi = 1500)  
     plt.show()
+    plt.savefig(dir_fig)
 
 
 
@@ -862,4 +865,6 @@ if __name__ == '__main__':
 
     #sys.exit(0)
     # 7. 画图
+    print("7. 画图")
     plot_datas(df_vbalance, df_abalance)
+    print("end")

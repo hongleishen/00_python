@@ -1,0 +1,10 @@
+ClassDiagram {
+
+    class s1 {
+        int : a;
+        int : b;
+        func(int:d, int:e);
+        "int (*func2)"(int: m, int:b);
+    }
+
+}

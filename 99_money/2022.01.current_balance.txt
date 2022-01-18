@@ -1,11 +1,11 @@
 年 2022
-01.15
+01.19
     vlend    对账    0    vcheck
-    招商    对账    16656    vcheck
+    招商    对账    16    vcheck
     平安    对账    1028    vcheck
-    余额宝    对账    21302    vcheck
-    农商    对账    12821    vcheck
-    花呗    对账    560    vcheck
+    余额宝    对账    26182    vcheck
+    农商    对账    2143    vcheck
+    花呗    对账    448    vcheck
     平安信    对账    41    vcheck
     微粒    对账    0    vcheck
     白条    对账    1775    vcheck

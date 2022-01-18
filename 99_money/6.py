@@ -185,7 +185,19 @@ def every_record_to_one_doubule_entry_account_line(datas, fdatas):
                 # 账户 间  都相反
                 if new_item[0] in laccout and new_item[3] in laccout:
                     # 1.        a <--> a
-                    new_item.append(-new_item[2])   # 账户  to 账户
+                    #new_item.append(-new_item[2])   # 账户  to 账户
+
+
+                    #laccout = ['vlend', '招商', '平安', '余额宝', '农商', '花呗', '平安信', '微粒', '白条']
+                    #laccoutv =[1,       1,       1,     1,        -1,      -1,     -1,     -1,      -1]
+                    # 储蓄  ->  信用卡
+
+                    # 储蓄 ->  储蓄    or    信用 -> 信用
+                    if laccoutv[laccout.index(new_item[0])] == laccoutv[laccout.index(new_item[3])]:
+                         new_item.append(-new_item[2])
+                    else:
+                         new_item.append(new_item[2])
+
                 else:
                     # v a之间 同 相同； 反 相反
                     # 2.        v <--> a
@@ -825,6 +837,7 @@ if __name__ == '__main__':
     fdatas = []
     print('\n\n   **setp 2. to_doubule_entry_account ^^^^ ')
     every_record_to_one_doubule_entry_account_line(datas, fdatas)
+    #sys.exit(0)
     # print("***********************************")
     # for item in fdatas:
     #    print(item, '\n')

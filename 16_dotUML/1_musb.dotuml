@@ -1,0 +1,129 @@
+
+ClassDiagram [frame=true framecolor=steelblue label="Class Diagram"] {
+    class musb {
+        void: "  *mregs = 0x22000000"
+        void: "  *ctrl_base = USB_BASE_ADDR"
+        "struct musb_hdrc_config" :"*config"
+        "struct musb_hw_ep":"   endpoints[16]"
+        "struct musb_hw_ep":"   bulk_ep"
+        "struct device" : "     *controller"
+        "(*isr)(int, void *)":"  isr"
+        "struct usb_gadget":"   g"
+        u16:"          epmask"
+
+    }
+    
+
+    class musb_hw_ep {
+        "struct musb" : "*musb"
+        "void" : "  *fifo"
+        void :   "  *regs"
+        u8 : "   epnum"
+        "struct musb_ep"  : "ep_in  /* TX */"
+        "struct musb_ep"  : "ep_out  /* RX */"
+        int : " max_packet_sz_tx"
+        int : " max_packet_sz_rx"
+    }
+    musb_hw_ep -c-> musb
+
+    class musb_ep {
+        usb_ep : end_point
+        char: "name[12]"
+        int :"current_epnum"
+        "struct musb_hw_ep":" *hw_ep"
+        u8 : "is_in"
+        list_head : req_list
+
+    }
+    musb_ep -c-> musb_hw_ep
+
+    //-----------------------
+    class usb_ep {
+        char : "*name"
+        usb_ep_ops : "ops"
+        list_head : "ep_list"
+        usb_ep_caps : "caps"
+    }
+    usb_ep -c-> musb_ep
+
+    class usb_ep_ops {
+        "*enable"(usb_ep : "*ep", usb_endpoint_descriptor : "*desc");
+        "*free_request"(usb_ep : "*ep", usb_request :"*req")
+        "*alloc_request"(usb_ep: "*ep",gfp_t :gfp_flags)
+        "*queue"(usb_ep : "*ep", usb_request :"*req", gfp_t : gfp_flags)
+        "*fifo_status"(sb_ep :"*ep")
+        "*fifo_flush"(usb_ep :"*ep")
+    }
+    usb_ep_ops -c-> usb_ep
+
+    class usb_ep_caps {
+        int : type_control
+        int : type_bulk
+        int : type_int
+        int : dir_in
+        int : dir_out
+    }
+    usb_ep_caps -c-> usb_ep
+
+
+    class usb_gadget {
+        "struct usb_gadget_ops":"*ops"
+        "enum usb_device_speed":speed;
+        "enum usb_device_speed":       max_speed;
+        "enum usb_device_state":       state;
+        char          :"         *name"
+        usb_udc : "        *udc"
+    }
+    usb_gadget -c-> musb
+
+    class usb_udc {
+        usb_gadget : "   *gadget"
+        usb_gadget_driver : "*driver"
+    }
+    usb_udc -a-> usb_gadget
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    //================================
+    class musb_request {
+        usb_request : request;
+        list_head   : list;
+        musb_ep    :  "*ep";
+        musb    : "*musb";
+        u8 :   "tx";
+        u8 : epnum;
+        buffer_map_state : map_state;
+    }
+    align {
+        musb_ep
+        musb_request
+    }
+
+    class usb_request {
+        void        :    "*buf";
+        int : length;
+        int : stram_id
+        complete(usb_ep : "*ep", usb_request : "*req")
+        list_head : list
+        int  : status
+        int : frame_number
+    }
+    usb_request -c-> musb_request
+}
+
+

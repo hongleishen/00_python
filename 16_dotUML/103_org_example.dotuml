@@ -1,0 +1,51 @@
+ClassDiagram {
+ class Person {
+  name:String
+  setName(name:String)
+  getName():String
+ }
+
+
+  class Math {
+  static public PI:double="3.14159"
+  static public cos(angle:double):double
+ }
+
+
+ abstract class Geometry {
+  abstract public getArea():double
+  abstract public getPerimeter():double
+ }
+
+
+ class Set <T> {
+  insert(T)
+  remove(T)
+ }
+
+
+ interface Comparable {
+  public compareTo(o:Object):int
+ }
+
+ enumeration Color {
+  red
+  green
+  blue
+ }
+
+/*
+ class ca
+ class cb
+ ca "1..*" -- "0..1" cb : "Binary association"
+*/
+ class ca
+ class cb
+ class cc
+ //ca -- cb, -- cc : "N-ary asso"
+
+ ca --> cb
+
+}
+
+

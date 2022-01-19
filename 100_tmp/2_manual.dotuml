@@ -1,0 +1,15 @@
+ClassDiagram {
+
+    class s1 {
+        int : a;
+        int : b;
+        func(int:d, 
+             int:e);
+             
+        "int (*func2)"(int: m, int:b);
+        "const struct musb_platform_ops" : "*ops";
+        "irqreturn_t     (*isr)":"(int, void *)"
+        "int (*func3)"(int :a)
+    }
+
+}

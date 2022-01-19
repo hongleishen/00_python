@@ -5,6 +5,8 @@ ClassDiagram {
         int : b;
         func(int:d, int:e);
         "int (*func2)"(int: m, int:b);
+        //const struct musb_platform_ops *ops;
     }
 
 }
+

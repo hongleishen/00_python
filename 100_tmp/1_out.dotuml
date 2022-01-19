@@ -3,6 +3,7 @@ ClassDiagram {
 class s1 {
 	"int":"a"
 	"int":"b"
+	func:"(int a, int b)"
 }
 
 }

@@ -1,7 +1,9 @@
-digraph {
+digraph tmp {
 	hello -> world;
 	a -> b;
 	hello -> a
 	a -> f;
-	
+
 }
+
+

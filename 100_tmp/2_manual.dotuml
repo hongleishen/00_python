@@ -10,6 +10,9 @@ ClassDiagram {
         "const struct musb_platform_ops" : "*ops";
         "irqreturn_t     (*isr)":"(int, void *)"
         "int (*func3)"(int :a)
+
+        "void (*func4)"(st: "*abc")
+        "void (*func5)"(ef_abc: c)
     }
 
 }

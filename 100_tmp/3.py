@@ -61,12 +61,51 @@ def strip_commit(str):
     
     return str
 
+def cal_tab(tn):
+    n = 0
+    if tn < 4:
+        n = 4 - tn
+    elif tn < 8:
+        n = 8 - tn
+    elif tn < 12:
+        n = 12 - tn
+    elif tn < 16:
+        n = 16 - tn
+    elif tn < 20:
+        n = 20 -tn
+    elif tn < 24:
+        n = 24 - tn
+
+    return n 
+        
+def cal_tab2(tn):
+    gape = 8
+    gapelen = 4
+
+    n = 0
+    for i in range(1, gapelen):
+        if tn  <= gape * i :
+            n = gape*i - tn
+            break     
+    return n 
+
+
+
+
     
 def process_member(line):
     i = line.rfind(" ")
     s_type = line[0:i].strip()
     s_value = line[i+1:]
-    return '"' + s_type + '"' + ' : ' + '"' + s_value + '"'
+
+    # 控制缩进   \t 没有效果
+    n = cal_tab2(len(s_type))
+    if (len(s_type + s_value) >= 40):
+        n = 1
+
+    print('n = ', n)
+    return '"' + s_type + '"' + ' : ' + '"' + ' '*n + s_value + '"'
+
 
 # "int     (*set_vbus)(struct device *dev, int is_on)"
 def process_func(line):
@@ -214,6 +253,10 @@ def process_relation(text):
     
     return tx + txp
 
+#def process_format(line):
+
+
+
 
 def process_relation_num(relation_text, text):
     dclass = {}
@@ -247,7 +290,7 @@ def process_relation_num(relation_text, text):
     new_t = ''
     text_lines = text.split('\n')
     for line in text_lines:
-
+        #line = process_format(line)
         if line.startswith('class '):        # class开始
             class__ = line.split(' ')[1]
             if class__ in ls_class:
@@ -263,7 +306,7 @@ def process_relation_num(relation_text, text):
             if line.find('struct') != -1:
                 struc = line.split(' ')[1][:-1]
                 if struc in dclass[class__] :
-                    line = line[:-1]  + '    /*' + str(n) + '*/"'
+                    line = line[:-1]  + '  /*' + str(n) + '*/"'
                     n += 1
             new_t += line + '\n'
 
@@ -400,7 +443,7 @@ if __name__ == '__main__':
     text = process_relation_num(text_relation, text)
 
 
-    # 8. 处理 ClassDiagram
+    # 9. 处理 ClassDiagram
     print('\n --------8. 处理 ClassDiagram')
     text += '\n\n' + text_relation
     text = "ClassDiagram {\n\n" + text + '\n\n}'

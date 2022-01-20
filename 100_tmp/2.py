@@ -96,7 +96,100 @@ def process_line(line, m_flag, m_lines):
         m_lines += line
         return -1, m_flag, m_lines
 
+def find_second_not_null(ls):
+    first = 1
+    for item in ls:
+        if first:
+            first = 0
+            continue
+        else:
+            if item != '':
+                print('find second', item)
+                return item
+
+
+def process_relation(text):
+    class_begine = 0
+
+    ls_class = []
+    ls_struct1 = []
+    ls_struct2 = []
+
+    ls_structp = []
+    ls_structp2 = []
+
+    ls_text = text.split('\n')
+
+    # 创建ls
+    for item in ls_text:
+        item.strip()
+        if item == '':                      # 空行跳过
+            continue
+
+        print('5.0----------item-------------', item)
+        if item.startswith('class '):        # class开始
+            #class_begine = 1
+            #tp = item.split(' ')[1]
+            str_class = find_second_not_null(item.split(' '))
+            ls_class.append(str_class)
+
+            print('5.1 class begine, class = ', str_class)
+            # continue
+
+        elif item == '}':                    # class end
+            #class_begine = 0
+            print('==end class, ls_struct2 = ', ls_struct2)
+            ls_struct1.append(ls_struct2)
+            ls_struct2 = []
+
+            ls_structp.append(ls_structp2)
+            ls_structp2 = []
+
+        else:                               # class内容
+            #item.strip()
+            print('else item = ', item)
+
+            if item.find('"struct') != -1:
+                print("has find==============")
+                v = find_second_not_null(item.split(' '))
+                print('v = ', v)
+
+                if item.find('*') == -1:
+                    ls_struct2.append(v[:-1])
+                else:
+                    ls_structp2.append(v[:-1])
+            else:
+                print('not find==')
+            print('\n')
+
         
+    print('ls_class = ', ls_class)
+    print('ls_struct1 = ', ls_struct1)
+    
+    #  分析 关系
+    #ls_class =  ['test_class', 'musb_hw_ep', 'musb_ep', 'dma_channel']
+    #ls_struct1 =  [[], 
+    #           ['musb', 'dma_channel', 'dma_channel', 'musb_ep', 'musb_ep'], ['usb_ep', 'musb_hw_ep', 'musb', 'usb_endpoint_descriptor', 'dma_channel'], 
+    # []]
+    ls_relation = []
+    tx = ''
+    for i in range(len(ls_class)):
+        
+        for j in range(len(ls_class)):
+            if ls_class[i] in ls_struct1[j] :    # ls_class[i] 在ls_class[j]中有
+                print('struct i in class j', i, j)
+                tx += ls_class[i] + ' -c-> ' + ls_class[j] + '\n'
+
+    txp = ''
+    for i in range(len(ls_class)):
+        
+        for j in range(len(ls_class)):
+            if ls_class[i] in ls_structp[j] :    # ls_class[i] 在ls_class[j]中有
+                print('struct p i in class j', i, j)
+                txp += ls_class[i] + ' -a-> ' + ls_class[j] + '\n'  
+    
+    return tx + txp
+
 
 if __name__ == '__main__':
     import numpy as np
@@ -104,6 +197,7 @@ if __name__ == '__main__':
 
     fin = open("2.c", encoding="utf-8")
     input_file = fin.read()
+    fin.close()
     #print(input_file)
     in_lines = input_file.split("\n")
 
@@ -194,9 +288,20 @@ if __name__ == '__main__':
 
     print('\ntext =\n', text)
 
+    # 5. 祛除多余部分，比如  const __attribute__
+    #text.replace('__iomem', '')
+    text = text.replace('const ', '')
 
-    # 5. 处理 ClassDiagram
-    print('\n --------5. 处理 ClassDiagram')
+
+    # 6. 处理 关系
+    print('-----6. 处理 关系')
+    text_relation = process_relation(text)
+    print('text_relation = \n', text_relation)
+
+
+    # 7. 处理 ClassDiagram
+    print('\n --------7. 处理 ClassDiagram')
+    text += '\n\n' + text_relation
     text = "ClassDiagram {\n\n" + text + '\n\n}'
     dir_out = "2_out.dotuml"
     f_out = open(dir_out, 'w', encoding='utf-8')

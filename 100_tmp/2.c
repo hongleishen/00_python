@@ -1,67 +1,69 @@
-struct usb_gadget_driver {
-	char            *function;
-	enum usb_device_speed   max_speed;
-	int         (*bind)(struct usb_gadget *gadget,
-					struct usb_gadget_driver *driver);
-	void            (*unbind)(struct usb_gadget *);
-	int         (*setup)(struct usb_gadget *,
-					const struct usb_ctrlrequest *);
-	void            (*disconnect)(struct usb_gadget *);
-	void            (*suspend)(struct usb_gadget *);
-	void            (*resume)(struct usb_gadget *);
-	void            (*reset)(struct usb_gadget *);
-	char            *udc_name;
-	struct list_head    pending;
-	unsigned                match_existing_only:1;
+struct  test_struct {
+	/* data */
+	int a;
+	int b;
 };
 
 
-struct musb_fifo_cfg {
-	u8          hw_ep_num;
-	enum musb_fifo_style    style;
-	enum musb_buf_mode  mode;
-	u16         maxpacket;
+struct musb_hw_ep {
+	struct musb     *musb;
+	void __iomem        *fifo;
+	void __iomem        *regs;
+
+	/* index in musb->endpoints[]  */
+	u8          epnum;
+
+	/* hardware configuration, possibly dynamic */
+	bool            is_shared_fifo;
+	bool            tx_double_buffered;
+	bool            rx_double_buffered;
+	u16         max_packet_sz_tx;
+	u16         max_packet_sz_rx;
+
+	struct dma_channel  *tx_channel;
+	struct dma_channel  *rx_channel;
+	void __iomem        *target_regs;
+
+	u8          rx_reinit;
+	u8          tx_reinit;
+
+	/* peripheral side */
+	struct musb_ep      ep_in;          /* TX */
+	struct musb_ep      ep_out;         /* RX */
 };
 
 
-struct musb_fifo_cfg {
-	u8          hw_ep_num;
-	enum musb_fifo_style    style;
-	enum musb_buf_mode  mode;
-	u16         maxpacket;
+struct musb_ep {
+	/* stuff towards the head is basically write-once. */
+	struct usb_ep           end_point;
+	char                name[12];
+	struct musb_hw_ep       *hw_ep;
+	struct musb         *musb;
+	u8              current_epnum;
+
+	/* ... when enabled/disabled ... */
+	u8              type;
+	u8              is_in;
+	u16             packet_sz;
+	const struct usb_endpoint_descriptor    *desc;
+	struct dma_channel      *dma;
+
+	/* later things are modified based on usage */
+	struct list_head        req_list;
+
+	u8              wedged;
+
+	/* true if lock must be dropped but req_list may not be advanced */
+	u8              busy;
+
+	u8              hb_mult;
 };
 
-
-struct musb_hdrc_eps_bits {
-	const char  name[16];
-	u8      bits;
-};
-
-
-struct musb_hdrc_config {
-	struct musb_fifo_cfg    *fifo_cfg;  /* board fifo configuration */
-	unsigned        fifo_cfg_size;  /* size of the fifo configuration */
-
-	/* MUSB configuration-specific details */
-	unsigned    multipoint:1;   /* multipoint device */
-	unsigned    dyn_fifo:1; /* supports dynamic fifo sizing */
-	unsigned    soft_con:1; /* soft connect required */
-	unsigned    utm_16:1; /* utm data witdh is 16 bits */
-	unsigned    big_endian:1;   /* true if CPU uses big-endian */
-	unsigned    mult_bulk_tx:1; /* Tx ep required for multbulk pkts */
-	unsigned    mult_bulk_rx:1; /* Rx ep required for multbulk pkts */
-	unsigned    high_iso_tx:1;  /* Tx ep required for HB iso */
-	unsigned    high_iso_rx:1;  /* Rx ep required for HD iso */
-	unsigned    dma:1; /* supports DMA */
-	unsigned    vendor_req:1; /* vendor registers required */
-
-	u8      num_eps;    /* number of endpoints _with_ ep0 */
-	u8      dma_channels; /* number of dma channels */
-	u8      dyn_fifo_size;  /* dynamic size in bytes */
-	u8      vendor_ctrl; /* vendor control reg width */
-	u8      vendor_stat; /* vendor status reg witdh */
-	u8      dma_req_chan; /* bitmask for required dma channels */
-	u8      ram_bits;   /* ram address size */
-
-	struct musb_hdrc_eps_bits *eps_bits;
+struct dma_channel {
+	void            *private_data;
+	/* FIXME not void* private_data, but a dma_controller * */
+	size_t          max_len;
+	size_t          actual_len;
+	enum dma_channel_status status;
+	bool            desired_mode;
 };

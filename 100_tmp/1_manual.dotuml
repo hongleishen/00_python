@@ -8,5 +8,11 @@ ClassDiagram {
         //const struct musb_platform_ops *ops;
     }
 
-}
+    class test {
+        int :a;
+        int :b;
+    }
 
+
+    test -r-> s1
+}

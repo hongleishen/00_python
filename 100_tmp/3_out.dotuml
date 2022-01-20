@@ -1,61 +1,5 @@
 ClassDiagram {
-class musb {
-	"spinlock_t" : "lock"
-	"struct musb_io" : "io"
-	"struct musb_platform_ops" : "*ops    /* 1 */"
-	"struct musb_context_registers" : "context"
-	"irqreturn_t     (*isr)"(in:"int" , void:"*")
-	"u16" : "hwvers"
-	"u32" : "port1_status"
-	"unsigned long" : "rh_timer"
-	"enum musb_h_ep0_state" : "ep0_stage"
-	"struct musb_hw_ep" : "*bulk_ep"
-	"struct list_head" : "control"
-	"struct list_head" : "in_bulk"
-	"struct list_head" : "out_bulk"
-	"struct dma_controller" : "*dma_controller"
-	"struct device" : "*controller"
-	"void __iomem" : "*ctrl_base"
-	"void __iomem" : "*mregs"
-	"u8" : "int_usb"
-	"u16" : "int_rx"
-	"u16" : "int_tx"
-	"unsigned char" : "state"
-	"int" : "nIrq"
-	"unsigned" : "irq_wake:1"
-	"struct musb_hw_ep" : "endpoints[MUSB_C_NUM_EPS]"
-	"u16" : "vbuserr_retry"
-	"u16" : "epmask"
-	"u8" : "nr_endpoints"
-	"u8" : "board_mode"
-	"int         (*board_set_power)"(int:"state")
-	"u8" : "min_power"
-	"bool" : "is_host"
-	"int" : "a_wait_bcon"
-	"unsigned long" : "idle_timeout"
-	"unsigned" : "is_active:1"
-	"unsigned" : "is_multipoint:1"
-	"unsigned" : "ignore_disconnect:1"
-	"unsigned" : "hb_iso_rx:1"
-	"unsigned" : "hb_iso_tx:1"
-	"unsigned" : "dyn_fifo:1"
-	"unsigned" : "bulk_split:1"
-	"unsigned" : "is_suspended:1"
-	"unsigned" : "may_wakeup:1"
-	"unsigned" : "is_self_powered:1"
-	"unsigned" : "is_bus_powered:1"
-	"unsigned" : "set_address:1"
-	"unsigned" : "test_mode:1"
-	"unsigned" : "softconnect:1"
-	"u8" : "address"
-	"u8" : "test_mode_nr"
-	"u16" : "ackpend"
-	"enum musb_g_ep0_state" : "ep0_state"
-	"struct usb_gadget" : "g"
-	"struct usb_gadget_driver" : "*gadget_driver"
-	"unsigned" : "double_buffer_not_ok:1"
-	"struct musb_hdrc_config" : "*config"
-}
+
 
 class musb_platform_ops {
 	"int (*init)"(musb:"*musb")
@@ -71,7 +15,7 @@ class musb_platform_ops {
 }
 
 class musb_hw_ep {
-	"struct musb" : "*musb"
+	"struct musb" : "*musb    /*0*/"
 	"void __iomem" : "*fifo"
 	"void __iomem" : "*regs"
 	"u8" : "epnum"
@@ -106,19 +50,75 @@ class musb_context_registers {
 	"u8 index," : "testmode"
 	"u8 devctl, busctl," : "misc"
 	"u32" : "otg_interfsel"
-	"struct musb_csr_regs" : "index_regs[MUSB_C_NUM_EPS]"
+	"struct musb_csr_regs" : "index_regs[MUSB_C_NUM_EPS]    /*0*/"
+}
+
+class musb {
+	"spinlock_t" : "lock"
+	"struct musb_io" : "io"
+	"struct musb_platform_ops" : "*ops    /*0*/"
+	"struct musb_context_registers" : "context    /*1*/"
+	"irqreturn_t     (*isr)"(in:"int" , void:"*")
+	"u16" : "hwvers"
+	"u32" : "port1_status"
+	"unsigned long" : "rh_timer"
+	"enum musb_h_ep0_state" : "ep0_stage"
+	"struct musb_hw_ep" : "*bulk_ep    /*2*/"
+	"struct list_head" : "control"
+	"struct list_head" : "in_bulk"
+	"struct list_head" : "out_bulk"
+	"struct dma_controller" : "*dma_controller"
+	"struct device" : "*controller"
+	"void __iomem" : "*ctrl_base"
+	"void __iomem" : "*mregs"
+	"u8" : "int_usb"
+	"u16" : "int_rx"
+	"u16" : "int_tx"
+	"unsigned char" : "state"
+	"int" : "nIrq"
+	"unsigned" : "irq_wake:1"
+	"struct musb_hw_ep" : "endpoints[MUSB_C_NUM_EPS]    /*3*/"
+	"u16" : "vbuserr_retry"
+	"u16" : "epmask"
+	"u8" : "nr_endpoints"
+	"u8" : "board_mode"
+	"int         (*board_set_power)"(int:"state")
+	"u8" : "min_power"
+	"bool" : "is_host"
+	"int" : "a_wait_bcon"
+	"unsigned long" : "idle_timeout"
+	"unsigned" : "is_active:1"
+	"unsigned" : "is_multipoint:1"
+	"unsigned" : "ignore_disconnect:1"
+	"unsigned" : "hb_iso_rx:1"
+	"unsigned" : "hb_iso_tx:1"
+	"unsigned" : "dyn_fifo:1"
+	"unsigned" : "bulk_split:1"
+	"unsigned" : "is_suspended:1"
+	"unsigned" : "may_wakeup:1"
+	"unsigned" : "is_self_powered:1"
+	"unsigned" : "is_bus_powered:1"
+	"unsigned" : "set_address:1"
+	"unsigned" : "test_mode:1"
+	"unsigned" : "softconnect:1"
+	"u8" : "address"
+	"u8" : "test_mode_nr"
+	"u16" : "ackpend"
+	"enum musb_g_ep0_state" : "ep0_state"
+	"struct usb_gadget" : "g"
+	"struct usb_gadget_driver" : "*gadget_driver"
+	"unsigned" : "double_buffer_not_ok:1"
+	"struct musb_hdrc_config" : "*config"
 }
 
 
 
-
-
+musb_hw_ep -c-> musb
 musb_csr_regs -c-> musb_context_registers
 musb_context_registers -c-> musb
 musb_platform_ops -a-> musb
 musb_hw_ep -a-> musb
 musb -a-> musb_hw_ep
-musb_hw_ep -c-> musb
 
 
 }

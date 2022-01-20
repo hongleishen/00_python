@@ -215,6 +215,64 @@ def process_relation(text):
     return tx + txp
 
 
+def process_relation_num(relation_text, text):
+    dclass = {}
+    ls = []
+    relation_lines = relation_text.split('\n')
+    for item in relation_lines:                   # 初始化key
+        item = item.strip()
+        if item != '':
+            #print('relation item =', item)
+            class_ = item.split(' ')[2]
+            dclass[class_] = []
+    print(dclass)
+
+    for item in relation_lines:                  # 初始化 value
+        item = item.strip()
+        if item != '':
+            print('2. item = ', item)
+            struct_ = item.split(' ')[0]
+            class_ = item.split(' ')[2]
+
+            ls = dclass[class_]
+            ls.append(struct_)
+            dclass[class_] = ls
+        
+
+    # print(dclass)
+    # ----text-------------------
+    ls_class = list(dclass.keys())
+    class_begine = 0
+    n = 0
+    new_t = ''
+    text_lines = text.split('\n')
+    for line in text_lines:
+
+        if line.startswith('class '):        # class开始
+            class__ = line.split(' ')[1]
+            if class__ in ls_class:
+                class_begine = 1
+            new_t += line + '\n'
+
+        elif line.startswith('}'):
+            class_begine = 0
+            n = 0
+            new_t += line + '\n'
+        
+        elif class_begine:
+            if line.find('struct') != -1:
+                struc = line.split(' ')[1][:-1]
+                if struc in dclass[class__] :
+                    line = line[:-1]  + '    /*' + str(n) + '*/"'
+                    n += 1
+            new_t += line + '\n'
+
+        else:
+            new_t += line + '\n'
+
+    return new_t
+
+
 if __name__ == '__main__':
     import numpy as np
     import sys
@@ -330,6 +388,7 @@ if __name__ == '__main__':
     print('text_relation = \n', text_relation)
 
     # 7. 聚合and组合地方加   /*number*/
+    print('----# 7. 聚合and组合地方加   /*number*/')
     """
     musb_hw_ep -c-> musb
     musb_csr_regs -c-> musb_context_registers
@@ -338,6 +397,7 @@ if __name__ == '__main__':
     musb_hw_ep -a-> musb
     musb -a-> musb_hw_ep
     """
+    text = process_relation_num(text_relation, text)
 
 
     # 8. 处理 ClassDiagram

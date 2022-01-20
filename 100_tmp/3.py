@@ -187,6 +187,8 @@ def process_relation(text):
         
     print('ls_class = ', ls_class)
     print('ls_struct1 = ', ls_struct1)
+    print('ls_structp = ', ls_structp)
+
     
     #  分析 关系
     #ls_class =  ['test_class', 'musb_hw_ep', 'musb_ep', 'dma_channel']
@@ -267,11 +269,15 @@ if __name__ == '__main__':
             continue
         if lcommit_start == 1:
             continue
+    
+        if line.find("#define") != -1:
+            continue
+
         print("\n\n--1.通过预处理的 line = \n", line)
 
         #sys.exit(0)
         # 2. 是 struct开始
-        if line.startswith("struct") and struct_begin == 0:
+        if line.startswith("struct") and line.find('{') != -1 and struct_begin == 0:
             struct_begin = 1
             line = line.replace("struct", "class")
             class_t = line + '\n'
@@ -323,9 +329,19 @@ if __name__ == '__main__':
     text_relation = process_relation(text)
     print('text_relation = \n', text_relation)
 
+    # 7. 聚合and组合地方加   /*number*/
+    """
+    musb_hw_ep -c-> musb
+    musb_csr_regs -c-> musb_context_registers
+    musb_context_registers -c-> musb
+    musb_platform_ops -a-> musb
+    musb_hw_ep -a-> musb
+    musb -a-> musb_hw_ep
+    """
 
-    # 7. 处理 ClassDiagram
-    print('\n --------7. 处理 ClassDiagram')
+
+    # 8. 处理 ClassDiagram
+    print('\n --------8. 处理 ClassDiagram')
     text += '\n\n' + text_relation
     text = "ClassDiagram {\n\n" + text + '\n\n}'
     dir_out = "3_out.dotuml"

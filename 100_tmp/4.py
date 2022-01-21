@@ -130,8 +130,8 @@ def process_func(line):
     #print(parameters)
 
     #(dma_channel:"*channel" , u16:"maxpacket" , void:"*buf" , u32:"length")
-    #if len(parameters) >= 60:
-    #    parameters = ''
+    if len(parameters) >= 60:
+        parameters = ''
     parameters = '(' + parameters + ')'
     #print(parameters)
 

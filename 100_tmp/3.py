@@ -276,12 +276,12 @@ def process_relation_num(relation_text, text):
             #print('relation item =', item)
             class_ = item.split(' ')[2]
             dclass[class_] = []
-    print(dclass)
+    #print(dclass)
 
     for item in relation_lines:                  # 初始化 value
         item = item.strip()
         if item != '':
-            print('2. item = ', item)
+            #print('2. item = ', item)
             struct_ = item.split(' ')[0]
             class_ = item.split(' ')[2]
 
@@ -329,7 +329,7 @@ def process_relation_num(relation_text, text):
                     #tmp = class__ + ' : ' +  struc + ' : ' + str(n)
                     tmp = class__ + ' : ' + str(n)
 
-                    print('tmp = \n', tmp) 
+                    # print('tmp = \n', tmp) 
                     # -------------d_srn{} 处理-----------------------
                     try:
                         rn = d_srn[struc]
@@ -370,12 +370,12 @@ def add_relation_num(text, d_srn):
             class_begine = 0
 
             # -------添加信息- "// 3 "(musb) --------------------
-            print('\nclass__ = ', class__)
+            # print('\nclass__ = ', class__)
             for item in d_srn[class__]:
                 num = item.split(':')[1]
                 func = item.split(':')[0].strip()
-                add_mesg = '"// ' + num + '"' + '(' + func + ')'
-                print(add_mesg)
+                add_mesg = '"// ' + num + ' "' + '(' + func + ')'
+                # print(add_mesg)
 
                 new_t += '    ' + add_mesg + '\n'
             # ===========================
@@ -493,7 +493,7 @@ if __name__ == '__main__':
                 print('func = ', func)
                 class_t += '\t' + func + '\n'
 
-    print('\ntext =\n', text)
+    # print('\ntext =\n', text)
 
     # 5. 祛除多余部分，比如  const __attribute__
     #text.replace('__iomem', '')

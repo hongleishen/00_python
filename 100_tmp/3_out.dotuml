@@ -1,6 +1,53 @@
 ClassDiagram {
 
 
+class musb_fifo_cfg {
+	"u8" : "      hw_ep_num"
+	"enum musb_fifo_style" : "    style"
+	"enum musb_buf_mode" : "      mode"
+	"u16" : "     maxpacket"
+}
+
+class musb_hdrc_eps_bits {
+	"char" : "      name[16]"
+	"u8" : "      bits"
+}
+
+class musb_hdrc_config {
+	"struct musb_fifo_cfg" : "    *fifo_cfg  /*0*/"
+	"unsigned" : "fifo_cfg_size"
+	"unsigned" : "multipoint:1"
+	"unsigned" : "dyn_fifo:1"
+	"unsigned" : "soft_con:1"
+	"unsigned" : "utm_16:1"
+	"unsigned" : "big_endian:1"
+	"unsigned" : "mult_bulk_tx:1"
+	"unsigned" : "mult_bulk_rx:1"
+	"unsigned" : "high_iso_tx:1"
+	"unsigned" : "high_iso_rx:1"
+	"unsigned" : "dma:1"
+	"unsigned" : "vendor_req:1"
+	"u8" : "      num_eps"
+	"u8" : "      dma_channels"
+	"u8" : "      dyn_fifo_size"
+	"u8" : "      vendor_ctrl"
+	"u8" : "      vendor_stat"
+	"u8" : "      dma_req_chan"
+	"u8" : "      ram_bits"
+	"struct musb_hdrc_eps_bits" : "*eps_bits  /*1*/"
+}
+
+class musb_hdrc_platform_data {
+	"u8" : "      mode"
+	"char" : "      *clock"
+	"int     (*set_vbus)"(device:"*dev" , int:"is_on")
+	"u8" : "      min_power"
+	"int     (*set_power)"(int:"state")
+	"struct musb_hdrc_config" : " *config  /*0*/"
+	"void" : "    *board_data"
+	"void" : "      *platform_ops"
+}
+
 class musb_platform_ops {
 	"int (*init)"(musb:"*musb")
 	"int (*exit)"(musb:"*musb")
@@ -108,7 +155,7 @@ class musb {
 	"struct usb_gadget" : "       g"
 	"struct usb_gadget_driver" : "*gadget_driver"
 	"unsigned" : "double_buffer_not_ok:1"
-	"struct musb_hdrc_config" : " *config"
+	"struct musb_hdrc_config" : " *config  /*4*/"
 }
 
 
@@ -116,6 +163,10 @@ class musb {
 musb_hw_ep -c-> musb
 musb_csr_regs -c-> musb_context_registers
 musb_context_registers -c-> musb
+musb_fifo_cfg -a-> musb_hdrc_config
+musb_hdrc_eps_bits -a-> musb_hdrc_config
+musb_hdrc_config -a-> musb_hdrc_platform_data
+musb_hdrc_config -a-> musb
 musb_platform_ops -a-> musb
 musb_hw_ep -a-> musb
 musb -a-> musb_hw_ep

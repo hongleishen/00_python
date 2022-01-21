@@ -257,7 +257,14 @@ def process_relation(text):
 
 
 
-
+"""
+musb_hw_ep -c-> musb
+musb_csr_regs -c-> musb_context_registers
+musb_context_registers -c-> musb
+musb_platform_ops -a-> musb
+musb_hw_ep -a-> musb
+musb -a-> musb_hw_ep
+"""
 def process_relation_num(relation_text, text):
     dclass = {}
     ls = []
@@ -386,7 +393,7 @@ if __name__ == '__main__':
             continue
 
         # 3. 判断 struct结束
-        if line.find("};") != -1:
+        if line.find("};") != -1 and struct_begin:
             struct_begin = 0
             class_t += "}\n"
             text += '\n' + class_t
@@ -432,18 +439,10 @@ if __name__ == '__main__':
 
     # 7. 聚合and组合地方加   /*number*/
     print('----# 7. 聚合and组合地方加   /*number*/')
-    """
-    musb_hw_ep -c-> musb
-    musb_csr_regs -c-> musb_context_registers
-    musb_context_registers -c-> musb
-    musb_platform_ops -a-> musb
-    musb_hw_ep -a-> musb
-    musb -a-> musb_hw_ep
-    """
     text = process_relation_num(text_relation, text)
 
 
-    # 9. 处理 ClassDiagram
+    # 8. 处理 ClassDiagram
     print('\n --------8. 处理 ClassDiagram')
     text += '\n\n' + text_relation
     text = "ClassDiagram {\n\n" + text + '\n\n}'

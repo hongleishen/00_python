@@ -171,5 +171,17 @@ musb_platform_ops -a-> musb
 musb_hw_ep -a-> musb
 musb -a-> musb_hw_ep
 
+musb_fifo_cfg "0"-- musb_hdrc_config
+musb_hdrc_eps_bits "0"-- musb_hdrc_config
+musb_fifo_cfg "0"-- musb_hdrc_config
+//musb_hdrc_config "0"-- musb_hdrc_platform_data
+//musb "0"-- musb_hw_ep
+//musb_csr_regs "0"-- musb_context_registers
+//musb_platform_ops "0"-- musb
+//musb_context_registers "1"-- musb
+//musb_hw_ep "2"-- musb
+//musb_hw_ep "3"-- musb
+//musb_hdrc_config "4"-- musb
+
 
 }

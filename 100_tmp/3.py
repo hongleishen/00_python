@@ -289,13 +289,14 @@ def process_relation_num(relation_text, text):
             dclass[class_] = ls
         
 
-    # print(dclass)
-    # ----text-------------------
+    print('dclass =\n', dclass)
+    # ----text-----需要重写--------------
     ls_class = list(dclass.keys())
     class_begine = 0
     n = 0
     new_t = ''
     text_lines = text.split('\n')
+    text_line_number = ""                    # 处理连线num          
     for line in text_lines:
         #line = process_format(line)
         if line.startswith('class '):        # class开始
@@ -314,13 +315,15 @@ def process_relation_num(relation_text, text):
                 struc = line.split(' ')[1][:-1]
                 if struc in dclass[class__] :
                     line = line[:-1]  + '  /*' + str(n) + '*/"'
+                    text_line_number += struc + ' "' + str(n) + '"' + '-- ' + class__ + '\n'
+
                     n += 1
             new_t += line + '\n'
 
         else:
             new_t += line + '\n'
 
-    return new_t
+    return new_t, text_line_number
 
 
 if __name__ == '__main__':
@@ -439,12 +442,13 @@ if __name__ == '__main__':
 
     # 7. 聚合and组合地方加   /*number*/
     print('----# 7. 聚合and组合地方加   /*number*/')
-    text = process_relation_num(text_relation, text)
+    text, text_line_n = process_relation_num(text_relation, text)
+    print('\n\n\n text_line_n = ', text_line_n)
 
 
     # 8. 处理 ClassDiagram
     print('\n --------8. 处理 ClassDiagram')
-    text += '\n\n' + text_relation
+    text += '\n\n' + text_relation + '\n' + text_line_n
     text = "ClassDiagram {\n\n" + text + '\n\n}'
     dir_out = "3_out.dotuml"
     f_out = open(dir_out, 'w', encoding='utf-8')

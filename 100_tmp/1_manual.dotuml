@@ -15,5 +15,14 @@ ClassDiagram {
     }
 
 
-    test -r-> s1
+    class test2 {
+        it :e
+    }
+
+    //test -r-> s1
+    //test "1.."--"2.." s1 "hello"
+    test -- s1 
+
+    //test2 -- s1
+
 }

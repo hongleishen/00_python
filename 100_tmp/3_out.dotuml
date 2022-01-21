@@ -6,11 +6,13 @@ class musb_fifo_cfg {
 	"enum musb_fifo_style" : "    style"
 	"enum musb_buf_mode" : "      mode"
 	"u16" : "     maxpacket"
+    "//  0"(musb_hdrc_config)
 }
 
 class musb_hdrc_eps_bits {
 	"char" : "      name[16]"
 	"u8" : "      bits"
+    "//  1"(musb_hdrc_config)
 }
 
 class musb_hdrc_config {
@@ -35,6 +37,8 @@ class musb_hdrc_config {
 	"u8" : "      dma_req_chan"
 	"u8" : "      ram_bits"
 	"struct musb_hdrc_eps_bits" : "*eps_bits  /*1*/"
+    "//  0"(musb_hdrc_platform_data)
+    "//  4"(musb)
 }
 
 class musb_hdrc_platform_data {
@@ -59,6 +63,7 @@ class musb_platform_ops {
 	"int (*adjust_channel_params)"(int:"a")
 	"void    (*pre_root_reset_end)"(musb:"*musb")
 	"void    (*post_root_reset_end)"(musb:"*musb")
+    "//  0"(musb)
 }
 
 class musb_hw_ep {
@@ -78,6 +83,8 @@ class musb_hw_ep {
 	"u8" : "      tx_reinit"
 	"struct musb_ep" : "  ep_in"
 	"struct musb_ep" : "  ep_out"
+    "//  2"(musb)
+    "//  3"(musb)
 }
 
 class musb_csr_regs {
@@ -87,6 +94,7 @@ class musb_csr_regs {
 	"u8 rxfifosz," : "    txfifosz"
 	"u8 txfunaddr, txhubaddr," : "txhubport"
 	"u8 rxfunaddr, rxhubaddr," : "rxhubport"
+    "//  0"(musb_context_registers)
 }
 
 class musb_context_registers {
@@ -98,6 +106,7 @@ class musb_context_registers {
 	"u8 devctl, busctl," : "      misc"
 	"u32" : "     otg_interfsel"
 	"struct musb_csr_regs" : " index_regs[MUSB_C_NUM_EPS]  /*0*/"
+    "//  1"(musb)
 }
 
 class musb {
@@ -156,7 +165,9 @@ class musb {
 	"struct usb_gadget_driver" : "*gadget_driver"
 	"unsigned" : "double_buffer_not_ok:1"
 	"struct musb_hdrc_config" : " *config  /*4*/"
+    "//  0"(musb_hw_ep)
 }
+
 
 
 
@@ -171,17 +182,6 @@ musb_platform_ops -a-> musb
 musb_hw_ep -a-> musb
 musb -a-> musb_hw_ep
 
-musb_fifo_cfg "0"-- musb_hdrc_config
-musb_hdrc_eps_bits "0"-- musb_hdrc_config
-musb_fifo_cfg "0"-- musb_hdrc_config
-//musb_hdrc_config "0"-- musb_hdrc_platform_data
-//musb "0"-- musb_hw_ep
-//musb_csr_regs "0"-- musb_context_registers
-//musb_platform_ops "0"-- musb
-//musb_context_registers "1"-- musb
-//musb_hw_ep "2"-- musb
-//musb_hw_ep "3"-- musb
-//musb_hdrc_config "4"-- musb
 
 
 }

@@ -19,10 +19,16 @@ ClassDiagram {
         it :e
     }
 
+    class test3 {
+    }
+
     //test -r-> s1
     //test "1.."--"2.." s1 "hello"
-    test -- s1 
+    //test -- s1 "abc"
+    //test -c-> s1  
+    test --"ab" test2, --"cd" test3, --"ef" s1
 
-    //test2 -- s1
+
+    //test3 -- s1
 
 }

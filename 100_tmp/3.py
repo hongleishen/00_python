@@ -266,6 +266,7 @@ musb_hw_ep -a-> musb
 musb -a-> musb_hw_ep
 """
 def process_relation_num(relation_text, text):
+    # key class name, value class cotion struct's list
     dclass = {}
     ls = []
     relation_lines = relation_text.split('\n')
@@ -291,17 +292,22 @@ def process_relation_num(relation_text, text):
 
     print('dclass =\n', dclass)
     # ----text-----需要重写--------------
-    ls_class = list(dclass.keys())
+    ls_class = list(dclass.keys())          # 所有 class
     class_begine = 0
     n = 0
     new_t = ''
     text_lines = text.split('\n')
     text_line_number = ""                    # 处理连线num          
+    #relation_number = ''
+    # dict of struct relation number
+    d_srn = {}          # 记录 key: struct name, value : "class : number"
+                        # number 是本 class用过的 struct的编号  
+    rn = []
     for line in text_lines:
         #line = process_format(line)
         if line.startswith('class '):        # class开始
-            class__ = line.split(' ')[1]
-            if class__ in ls_class:
+            class__ = line.split(' ')[1]     #  class__, 现在遍历到的  class
+            if class__ in ls_class:          # 如果此 class被其它使用
                 class_begine = 1
             new_t += line + '\n'
 
@@ -311,11 +317,30 @@ def process_relation_num(relation_text, text):
             new_t += line + '\n'
         
         elif class_begine:
+            # 每个 class 用到的 struct已经在 dclass[class__]中记录
+            # 找出每个class并编号，覆盖写入文本             
             if line.find('struct') != -1:
-                struc = line.split(' ')[1][:-1]
+                struc = line.split(' ')[1][:-1]     # "struct musb_platform_ops" : "*ops
                 if struc in dclass[class__] :
                     line = line[:-1]  + '  /*' + str(n) + '*/"'
                     text_line_number += struc + ' "' + str(n) + '"' + '-- ' + class__ + '\n'
+                    #relation_number += struc + ':' + str(n)
+                    
+                    #tmp = class__ + ' : ' +  struc + ' : ' + str(n)
+                    tmp = class__ + ' : ' + str(n)
+
+                    print('tmp = \n', tmp) 
+                    # -------------d_srn{} 处理-----------------------
+                    try:
+                        rn = d_srn[struc]
+                        rn.append(tmp)
+                        d_srn[struc] = rn
+                    except:
+                        rn = []
+                        rn.append(tmp)
+                        d_srn[struc] = rn
+
+                    # =========================================
 
                     n += 1
             new_t += line + '\n'
@@ -323,7 +348,47 @@ def process_relation_num(relation_text, text):
         else:
             new_t += line + '\n'
 
-    return new_t, text_line_number
+    return new_t, text_line_number, d_srn
+
+# print('8. 在本class中添加 被 其它class包含的地方 的 number信息')
+# 需要 添加到本class行后面
+#  "// 3 "(musb)
+def add_relation_num(text, d_srn):
+    text_lines = text.split('\n')
+    ls_class = list(d_srn.keys())
+    new_t = ''
+    class_begine = 0
+
+    for line in text_lines:
+        if line.startswith('class '):        # class开始
+            class__ = line.split(' ')[1]     #  class__, 现在遍历到的  class
+            if class__ in ls_class:          # 如果此 class被其它使用
+                class_begine = 1
+            new_t += line + '\n'
+
+        elif line.startswith('}') and class_begine == 1:
+            class_begine = 0
+
+            # -------添加信息- "// 3 "(musb) --------------------
+            print('\nclass__ = ', class__)
+            for item in d_srn[class__]:
+                num = item.split(':')[1]
+                func = item.split(':')[0].strip()
+                add_mesg = '"// ' + num + '"' + '(' + func + ')'
+                print(add_mesg)
+
+                new_t += '    ' + add_mesg + '\n'
+            # ===========================
+            
+            new_t += line + '\n'
+        
+        elif class_begine:
+            new_t += line + '\n'
+
+        else:
+            new_t += line + '\n'
+
+    return new_t
 
 
 if __name__ == '__main__':
@@ -442,13 +507,18 @@ if __name__ == '__main__':
 
     # 7. 聚合and组合地方加   /*number*/
     print('----# 7. 聚合and组合地方加   /*number*/')
-    text, text_line_n = process_relation_num(text_relation, text)
-    print('\n\n\n text_line_n = ', text_line_n)
+    text, struct_n, d_srn = process_relation_num(text_relation, text)
+    print('\n\n\n struct_n = ', struct_n)
+    print('\n d_srn = ', d_srn)
 
+    # 8. 在本class中添加 被 其它class包含的地方 的 number信息
+    #  "// 3 "(musb)
+    print('8. 在本class中添加 被 其它class包含的地方 的 number信息')
+    text = add_relation_num(text, d_srn)
 
-    # 8. 处理 ClassDiagram
-    print('\n --------8. 处理 ClassDiagram')
-    text += '\n\n' + text_relation + '\n' + text_line_n
+    # 9. 处理 ClassDiagram
+    print('\n --------9. 处理 ClassDiagram')
+    text += '\n\n' + text_relation + '\n'
     text = "ClassDiagram {\n\n" + text + '\n\n}'
     dir_out = "3_out.dotuml"
     f_out = open(dir_out, 'w', encoding='utf-8')

@@ -20,6 +20,8 @@ ClassDiagram {
     }
 
     class test3 {
+        int a
+        "void func"(  )
     }
 
     //test -r-> s1

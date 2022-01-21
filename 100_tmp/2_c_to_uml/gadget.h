@@ -238,12 +238,6 @@ void usb_ep_fifo_flush(struct usb_ep *ep);
 
 /*-------------------------------------------------------------------------*/
 
-struct usb_dcd_config_params {
-	__u8  bU1devExitLat;    /* U1 Device exit Latency */
-#define USB_DEFAULT_U1_DEV_EXIT_LAT 0x01    /* Less then 1 microsec */
-	__le16 bU2DevExitLat;   /* U2 Device exit Latency */
-#define USB_DEFAULT_U2_DEV_EXIT_LAT 0x1F4   /* Less then 500 microsec */
-};
 
 
 struct usb_gadget;
@@ -627,28 +621,6 @@ extern char *usb_get_gadget_udc_name(void);
  * If you're using usb_gadget_get_string(), use this to wrap a string
  * together with its ID.
  */
-struct usb_string {
-	u8          id;
-	const char      *s;
-};
-
-/**
- * struct usb_gadget_strings - a set of USB strings in a given language
- * @language:identifies the strings' language (0x0409 for en-us)
- * @strings:array of strings with their ids
- *
- * If you're using usb_gadget_get_string(), use this to wrap all the
- * strings for a given language.
- */
-struct usb_gadget_strings {
-	u16         language;   /* 0x0409 for en-us */
-	struct usb_string   *strings;
-};
-
-struct usb_gadget_string_container {
-	struct list_head        list;
-	u8                      *stash[0];
-};
 
 /* put descriptor for string with that id into buf (buflen >= 256) */
 int usb_gadget_get_string(struct usb_gadget_strings *table, int id, u8 *buf);

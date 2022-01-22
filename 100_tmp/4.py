@@ -356,18 +356,29 @@ def add_relation_num(text, d_srn):
     ls_class = list(d_srn.keys())
     new_t = ''
     class_begine = 0
+    class__ = ''
+
+    s_be_p = set(ls_be_part) - set(ls_class)
+    l_be_p = list(s_be_p)
 
     for line in text_lines:
+
         if line.startswith('class '):        # class开始
             class__ = line.split(' ')[1]     #  class__, 现在遍历到的  class
-            if class__ in ls_class:          # 如果此 class被其它使用
-                class_begine = 1
-            new_t += line + '\n'
+            if class__ in ls_class:         # 如果此 class被其它使用
+                class_begine = 1             # class_begine 是非空 class的开始
+                new_t += line + '\n'
 
-        elif line.startswith('}') and class_begine == 1:
+            elif class__ in l_be_p:         # 被包含的也要写入
+                new_t += line + '\n'
+
+            elif simple == 0:               # 如果
+                new_t += line + '\n'
+                
+        elif line.startswith('}') and class_begine == 1:   # class 结束
             class_begine = 0
 
-            # -------添加信息- "// 3 "(musb) --------------------
+            # -------class的最后添加信息- "// 3 "(musb) --------------------
             # print('\nclass__ = ', class__)
             for item in d_srn[class__]:
                 num = item.split(':')[1]
@@ -383,10 +394,26 @@ def add_relation_num(text, d_srn):
         elif class_begine:
             new_t += line + '\n'
 
-        else:
+        elif class__ in l_be_p:         # 被包含的也要写入
+            new_t += line + '\n'
+
+        elif simple == 0:
             new_t += line + '\n'
 
     return new_t
+
+
+def process_be_point(text_relation):
+    ls = []
+    for item in text_relation.split('\n'):
+        if item.strip() == '':
+            continue
+        print('item = ', item)
+        temp = item.split(' ')[2]
+        ls.append(temp)
+    return ls
+
+
 
 
 if __name__ == '__main__':
@@ -402,7 +429,7 @@ if __name__ == '__main__':
         dir = sys.argv[1]
     else:
         dir = '.\\'
-
+    
     input_files = read_dir(dir)
 
     #print(input_files)
@@ -418,6 +445,7 @@ if __name__ == '__main__':
 
     lcommit_start = 0
     next_line_skip = 0
+    simple = 0
     
     
     for line in in_lines:
@@ -518,16 +546,26 @@ if __name__ == '__main__':
     # 7. 聚合and组合地方加   /*number*/
     print('----# 7. 聚合and组合地方加   /*number*/')
     text, struct_n, d_srn = process_relation_num(text_relation, text)
-    print('\n\n\n struct_n = ', struct_n)
+    #print('\n\n\n struct_n = ', struct_n)
     print('\n d_srn = ', d_srn)
 
-    # 8. 在本class中添加 被 其它class包含的地方 的 number信息
+
+    # 8. 是否去掉没有连线的 class
+    if len(sys.argv) >= 3:
+        if sys.argv[2] == 'simple':
+            simple = 1
+    ls_be_part = process_be_point(text_relation)
+    print('\nls_be_point = ', ls_be_part)
+        
+
+
+    # 9. 在本class中添加 被 其它class包含的地方 的 number信息
     #  "// 3 "(musb)
-    print('8. 在本class中添加 被 其它class包含的地方 的 number信息')
+    print('9. 在本class中添加 被 其它class包含的地方 的 number信息')
     text = add_relation_num(text, d_srn)
 
-    # 9. 处理 ClassDiagram
-    print('\n --------9. 处理 ClassDiagram')
+    # 10. 处理 ClassDiagram
+    print('\n --------10. 处理 ClassDiagram')
     text += '\n\n' + text_relation + '\n'
     text = "ClassDiagram {\n\n" + text + '\n\n}'
     dir_out = "4_out.dotuml"

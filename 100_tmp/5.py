@@ -438,6 +438,52 @@ def remove_c_a_realtion(text_relation):
     return text
 
 
+def process_rm_class_file(text, text_relation, dir_rm_file):
+    f = open(dir_rm_file, encoding='utf-8')
+    rm_text = f.read()
+    print('\nrm_class is:\n', rm_text)
+    f.close()
+
+    rm_class_begin = 0
+    new_text = ''
+    new_text_relation = ''
+
+    ls_rm_class = rm_text.splitlines()
+
+    # 先处理 text
+    for line in text.splitlines():
+        if line.startswith('class '):
+            this_class = line.split(' ')[1]
+            if this_class in ls_rm_class:
+                rm_class_begin = 1
+                continue
+
+            new_text += line + '\n'
+
+        elif line.startswith('}') and rm_class_begin:
+            rm_class_begin = 0
+            # new_text += line + '\n'
+
+        elif rm_class_begin == 1:
+            continue
+
+        else:
+            new_text += line + '\n'
+
+    
+
+    for line in text_relation.splitlines():
+        ls = line.split(' ')
+        if ls[0] in ls_rm_class or ls[2] in ls_rm_class:
+            continue
+        else:
+            new_text_relation += line + '\n'
+
+    return new_text, new_text_relation
+
+
+# python .\5.py    .\4_driver_usb     simple                        .\rm_class.txt
+# 参数   0. *.py    1. dir           2. simple(没有联系的去掉)       3. 文本路径 （需要rm的class）
 if __name__ == '__main__':
     import numpy as np
     import sys
@@ -590,15 +636,26 @@ if __name__ == '__main__':
     text_relation = remove_c_a_realtion(text_relation)
 
 
+    # 11. 是否读文本祛除 某些class
+    if len(sys.argv) >= 4:
+        dir_rm_file = sys.argv[3]
+        text, text_relation = process_rm_class_file(text, text_relation, dir_rm_file)
 
-
-    # 11. 处理 ClassDiagram
+    # 12. 处理 ClassDiagram
     print('\n --------10. 处理 ClassDiagram')
     text += '\n\n' + text_relation + '\n'
     text = "ClassDiagram {\n\n" + text + '\n\n}'
-    dir_out = "4_out.dotuml"
+
+    dir_out = sys.argv[1] + '.dotuml'
+    dir_out = dir_out.replace('./', '')
+    dir_out = dir_out.replace('/', '_')
+
+    dir_out = dir_out.replace('.\\', '')
+    dir_out = dir_out.replace('\\', '_')
+    print('dir_out = ', dir_out)
+
     f_out = open(dir_out, 'w', encoding='utf-8')
     f_out.write(text)
     f_out.close()
 
-    print("====end====")
+    print("\n\n====end====\n\n")

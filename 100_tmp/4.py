@@ -389,7 +389,7 @@ def add_relation_num(text, d_srn):
                 new_t += '    ' + add_mesg + '\n'
             # ===========================
             
-            new_t += line + '\n'
+            new_t += line + '\n\n'
         
         elif class_begine:
             new_t += line + '\n'

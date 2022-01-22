@@ -408,12 +408,34 @@ def process_be_point(text_relation):
     for item in text_relation.split('\n'):
         if item.strip() == '':
             continue
-        print('item = ', item)
         temp = item.split(' ')[2]
         ls.append(temp)
     return ls
 
 
+
+def remove_c_a_realtion(text_relation):
+    text = ''
+    ls_create_a = []
+    for item in text_relation.split('\n'):
+        if item.strip() == '':
+            continue   
+        ls = item.split(' ')
+        creat_a = ls[2] + ' -a-> ' + ls[0]
+        ls_create_a.append(creat_a)
+    
+    print('\nlc_create_a = ', ls_create_a)
+    for item in text_relation.split('\n'):
+        if item.strip() == '':
+            continue   
+        
+        if item in ls_create_a:
+            item = '//' + item
+            text += item + '\n'
+            print("commit double relation :", item)
+        else:
+            text += item + '\n'
+    return text
 
 
 if __name__ == '__main__':
@@ -539,12 +561,13 @@ if __name__ == '__main__':
 
 
     # 6. 处理 关系
-    print('\n---6. 处理 关系')
+    print('\n---------6. 处理 关系')
     text_relation = process_relation(text)
     print('text_relation = \n', text_relation)
 
+
     # 7. 聚合and组合地方加   /*number*/
-    print('----# 7. 聚合and组合地方加   /*number*/')
+    print('-------# 7. 聚合and组合地方加   /*number*/')
     text, struct_n, d_srn = process_relation_num(text_relation, text)
     #print('\n\n\n struct_n = ', struct_n)
     print('\n d_srn = ', d_srn)
@@ -555,14 +578,16 @@ if __name__ == '__main__':
         if sys.argv[2] == 'simple':
             simple = 1
     ls_be_part = process_be_point(text_relation)
-    print('\nls_be_point = ', ls_be_part)
-        
+    print('\n-----8. ls_be_point = ', ls_be_part)
 
-
+    
     # 9. 在本class中添加 被 其它class包含的地方 的 number信息
     #  "// 3 "(musb)
-    print('9. 在本class中添加 被 其它class包含的地方 的 number信息')
+    print('\n------------9. 在本class中添加 被 其它class包含的地方 的 number信息')
     text = add_relation_num(text, d_srn)
+
+    # 10.  s -c-> class    class -a-> s, 祛除 -a-> 关系
+    text_relation = remove_c_a_realtion(text_relation)
 
     # 10. 处理 ClassDiagram
     print('\n --------10. 处理 ClassDiagram')

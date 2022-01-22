@@ -1,0 +1,17 @@
+ClassDiagram {
+
+    class claw {
+    
+    }
+
+    class bird {
+        int : age
+        int : weight
+        "struct claw" : claw_
+    }
+
+
+    claw -c-> bird
+
+
+}

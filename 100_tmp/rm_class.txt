@@ -1,9 +1,0 @@
-musb_dma_channel
-musb_dma_controller
-dma_controller
-dma_channel
-
-musb_platform_ops
-
-musb_context_registers
-musb_csr_regs

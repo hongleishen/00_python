@@ -627,19 +627,6 @@ extern char *usb_get_gadget_udc_name(void);
  * If you're using usb_gadget_get_string(), use this to wrap a string
  * together with its ID.
  */
-struct usb_string {
-	u8          id;
-	const char      *s;
-};
-
-/**
- * struct usb_gadget_strings - a set of USB strings in a given language
- * @language:identifies the strings' language (0x0409 for en-us)
- * @strings:array of strings with their ids
- *
- * If you're using usb_gadget_get_string(), use this to wrap all the
- * strings for a given language.
- */
 
 struct usb_gadget_string_container {
 	struct list_head        list;

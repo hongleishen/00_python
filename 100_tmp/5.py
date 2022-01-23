@@ -27,7 +27,7 @@ ClassDiagram {
 
 # def pre_process_line(line):
 
-def read_dir(dir):
+def read_dir(dir, rm_file):
     text = ''
     for root, dirs, files in os.walk(dir):  
         #print('the path is ...')
@@ -39,6 +39,8 @@ def read_dir(dir):
         # print('')
 
         for file in files:
+            if file in rm_file:
+                continue
             d = root + '\\' + file
             print('reading dir', d)
             fin = open(d, encoding="utf-8")
@@ -438,17 +440,19 @@ def remove_c_a_realtion(text_relation):
     return text
 
 
-def process_rm_class_file(text, text_relation, dir_rm_file):
-    f = open(dir_rm_file, encoding='utf-8')
-    rm_text = f.read()
-    print('\nrm_class is:\n', rm_text)
-    f.close()
+def process_rm_class_file(text, text_relation, ls_config):
+    # f = open(dir_rm_file, encoding='utf-8')
+    # rm_text = f.read()
+    # print('\nrm_class is:\n', rm_text)
+    # f.close()
 
     rm_class_begin = 0
     new_text = ''
     new_text_relation = ''
 
-    ls_rm_class = rm_text.splitlines()
+    # ls_rm_class = rm_text.splitlines()
+
+    ls_rm_class = ls_config
 
     # 先处理 text
     for line in text.splitlines():
@@ -482,6 +486,30 @@ def process_rm_class_file(text, text_relation, dir_rm_file):
     return new_text, new_text_relation
 
 
+def config_file():
+    ls_config = []
+    try:
+        f = open('config_dotuml.c', encoding="utf-8")
+        input_file = f.read()
+        lines = input_file.splitlines()
+        #print('lines = ', lines)
+        for item in lines:
+            print(item)
+            if item.startswith('//') or item == '':
+                #print('conutinue')
+                continue
+            else:
+                #print('append', item)
+                ls_config.append(item)
+            
+        f.close()
+
+    except:
+        ls_config = []
+
+    return ls_config
+
+# 最新设计 只用输入路径，参数在config_dotuml.c中配置
 # python .\5.py    .\4_driver_usb     simple                        .\rm_class.txt
 # 参数   0. *.py    1. dir           2. simple(没有联系的去掉)       3. 文本路径 （需要rm的class）
 if __name__ == '__main__':
@@ -498,10 +526,13 @@ if __name__ == '__main__':
     else:
         dir = '.\\'
     
-    input_files = read_dir(dir)
+    ls_config = config_file()
+    print('\nconfig_file = ', ls_config)
+    rm_f = ls_config
+    input_files = read_dir(dir, rm_f)
 
     #print(input_files)
-    # sys.exit(0)
+    #sys.exit(0)
     in_lines = input_files.split("\n")
 
     # 全局变量
@@ -620,9 +651,13 @@ if __name__ == '__main__':
 
 
     # 8. 是否去掉 没有连线 的 class
-    if len(sys.argv) >= 3:
-        if sys.argv[2] == 'simple':
-            simple = 1
+    # if len(sys.argv) >= 3:
+    #     if sys.argv[2] == 'simple':
+    #         simple = 1
+
+    if 'simple' in ls_config:
+        simple = 1
+
     ls_be_part = process_be_point(text_relation)
     print('\n-----8. ls_be_point = ', ls_be_part)
 
@@ -637,9 +672,11 @@ if __name__ == '__main__':
 
 
     # 11. 是否读文本祛除 某些class
-    if len(sys.argv) >= 4:
-        dir_rm_file = sys.argv[3]
-        text, text_relation = process_rm_class_file(text, text_relation, dir_rm_file)
+    # if len(sys.argv) >= 4:
+    #     dir_rm_file = sys.argv[3]
+    #     text, text_relation = process_rm_class_file(text, text_relation, dir_rm_file)
+    
+    text, text_relation = process_rm_class_file(text, text_relation, ls_config)
 
     # 12. 处理 ClassDiagram
     print('\n --------10. 处理 ClassDiagram')

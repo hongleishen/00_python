@@ -222,4 +222,10 @@ align {
 }
 
 
+align {
+	imi_video_dev
+	imi_vendor_dev
+	
+}
+
 }

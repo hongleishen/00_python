@@ -1,0 +1,13 @@
+ClassDiagram [frame=true framecolor=steelblue label="musb_request"] {
+
+class musb_request {
+    usb_request : request;
+    list_head   : list;
+    musb_ep    :  "*ep";
+    musb    : "*musb";
+	u8 :   "tx";
+	u8 : epnum;
+	buffer_map_state : map_state;
+}
+
+}

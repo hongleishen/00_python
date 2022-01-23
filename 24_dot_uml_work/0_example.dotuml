@@ -1,0 +1,7 @@
+ClassDiagram {
+ class Person {
+  private name:String
+  protected setName(name:String)
+  public getName():String
+ }
+}

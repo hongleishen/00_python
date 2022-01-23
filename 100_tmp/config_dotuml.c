@@ -22,6 +22,7 @@ usb_udc
 imi_video_buffer
 
 usb_endpoint_descriptor
+imi_upload_dev
 
 // **** 3. rm file ****
 //u_imi.h

@@ -110,6 +110,14 @@ def process_func(line):
     s_f = line[0:i+1]
     s_f = '"' + s_f + '"'
 
+    # 去掉空格
+    new_f = ''
+    l_func = s_f.split(' ')
+    for item in l_func:
+        if item != '':
+            new_f += item + ' '
+    s_f = new_f
+
     s_parameter1 = line[i+2: -1]   # (struct device *dev, int is_on)
     parameters = ''
     ls = s_parameter1.split(',')

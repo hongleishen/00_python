@@ -25,4 +25,5 @@
 // imi_upload_dev
 
 // **** 3. rm file ****
-//u_imi.h
+u_imi.h
+imi_video.h

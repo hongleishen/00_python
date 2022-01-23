@@ -5,7 +5,7 @@
 
 
 // **** 1. 是否simple*** , simple: 没有关联的 class讲祛除
-//simple
+simple
 
 // **** 2. rm_class **** ， rm_class是开关， 之后才是要移除的class
 // rm_class
@@ -24,6 +24,16 @@
 // usb_endpoint_descriptor
 // imi_upload_dev
 
+
+# under_stand
+rm_class
+usb_udc
+usb_gadget_driver
+usb_gadget_strings
+usb_string
+musb_context_registers
+musb_csr_regs
+
 // **** 3. rm file ****
-u_imi.h
-imi_video.h
+//u_imi.h
+//imi_video.h

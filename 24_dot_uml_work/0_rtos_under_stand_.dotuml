@@ -1,15 +1,6 @@
 ClassDiagram {
 
 
-class usb_udc {
-	"struct usb_gadget_driver" : "*driver  /*0*/"
-	"struct usb_gadget" : "       *gadget  /*1*/"
-	"struct list_head" : "list"
-	"bool" : "    vbus"
-    "//  0 "(usb_gadget)
-}
-
-
 class imi_cmd_dev {
 	"struct imi_wait_head" : "    read_wq"
 	"int" : "     read_done"
@@ -21,6 +12,79 @@ class imi_cmd_dev {
 	"enum vendor_cmd_stage" : "   stage"
 	"struct usb_composite_dev" : "*cdev"
 	"int" : "     exit"
+}
+
+class imi_video_buffer {
+	"struct list_head" : "list"
+	"unsigned int" : "    index"
+	"unsigned int" : "    frame_len"
+	"enum imi_buffer_state" : "   state"
+	"void" : "    *mem"
+	"unsigned int" : "    transferred"
+	"unsigned int" : "    buf_id"
+	"struct imi_video_sub_dev" : "*dev  /*0*/"
+    "//  0 "(imi_video_sub_dev)
+}
+
+class imi_video_queue {
+	"struct list_head" : "queued_entry"
+	"struct list_head" : "started_entry"
+	"struct list_head" : "done_entry"
+	"spinlock_t" : "      queue_lock"
+    "//  2 "(imi_video_dev)
+}
+
+class imi_video_req {
+	"struct usb_request" : "      *req[VIDEO_REQ_NUM]  /*0*/"
+	"unsigned char" : "   *req_buffer[VIDEO_REQ_NUM]"
+	"struct list_head" : "req_free"
+	"struct list_head" : "req_busy"
+	"spinlock_t" : "      req_lock"
+    "//  1 "(imi_video_dev)
+}
+
+class imi_video_sub_dev {
+	"int" : "     stream_on"
+	"enum imi_stream_type" : "    type"
+	"int (*encode)" ()
+	"struct imi_video_buffer" : " *vbuf  /*0*/"
+	"int" : "     vbuf_num"
+	"enum imi_buf_type" : "       buf_type"
+	"unsigned int" : "    buf_offset"
+    "//  0 "(imi_video_buffer)
+    "//  3 "(imi_video_dev)
+}
+
+class imi_upload_dev {
+	"struct usb_ep" : "   *ep_out  /*0*/"
+	"int" : "     bulk_out_maxpacket"
+	"struct imi_wait_head" : "    read_wq"
+	"spinlock_t" : "      lock"
+	"int" : "     error"
+	"struct usb_request" : "      *rx_req  /*1*/"
+	"int" : "     rx_done"
+	"struct usb_request" : "      *tx_req  /*2*/"
+	"FRTOS_completion_t" : "      tx_complete"
+    "//  4 "(imi_video_dev)
+}
+
+class imi_video_dev {
+	"struct usb_ep" : "   *ep  /*0*/"
+	"int" : "     connect"
+	"struct imi_wait_head" : "    wait"
+	"unsigned int" : "    max_payload_size"
+	"struct imi_video_req" : "    video_req  /*1*/"
+	"struct imi_video_queue" : "  video_queue  /*2*/"
+	"struct imi_video_sub_dev" : " sub_dev[IMI_STREAM_MAX]  /*3*/"
+	"struct imi_upload_dev" : "   udev  /*4*/"
+    "//  0 "(imi_vendor_dev)
+}
+
+class imi_vendor_dev {
+	"struct usb_function" : "     function"
+	"struct usb_composite_dev" : "*cdev"
+	"int" : "     online"
+	"struct imi_video_dev" : "    vdev  /*0*/"
 }
 
 class musb_platform_ops {
@@ -36,7 +100,6 @@ class musb_platform_ops {
 	"void (*post_root_reset_end)" (musb:"*musb")
     "//  0 "(musb)
 }
-
 
 class musb_hw_ep {
 	"struct musb" : "     *musb  /*0*/"
@@ -60,29 +123,6 @@ class musb_hw_ep {
     "//  1 "(musb_ep)
 }
 
-
-class musb_csr_regs {
-	"u16 txmaxp, txcsr, rxmaxp," : "rxcsr"
-	"u16 rxfifoadd," : "  txfifoadd"
-	"u8 txtype, txinterval, rxtype," : " rxinterval"
-	"u8 rxfifosz," : "    txfifosz"
-	"u8 txfunaddr, txhubaddr," : "txhubport"
-	"u8 rxfunaddr, rxhubaddr," : "rxhubport"
-    "//  0 "(musb_context_registers)
-}
-
-
-class musb_context_registers {
-	"u8" : "      power"
-	"u16 intrtxe," : "    intrrxe"
-	"u8" : "      intrusbe"
-	"u16" : "     frame"
-	"u8 index," : "       testmode"
-	"u8 devctl, busctl," : "      misc"
-	"u32" : "     otg_interfsel"
-	"struct musb_csr_regs" : " index_regs[MUSB_C_NUM_EPS]  /*0*/"
-    "//  1 "(musb)
-}
 
 
 class musb {
@@ -147,7 +187,6 @@ class musb {
     "//  2 "(musb_ep)
 }
 
-
 class musb_request {
 	"struct usb_request" : "      request  /*0*/"
 	"struct list_head" : "list"
@@ -178,12 +217,6 @@ class musb_ep {
     "//  1 "(musb_request)
 }
 
-
-class g_usb_bind_callback {
-	"char" : "      *usb_function_name"
-	"g_bind_callback_f" : "       fptr"
-}
-
 class usb_request {
 	"void" : "    *buf"
 	"unsigned" : "length"
@@ -199,13 +232,10 @@ class usb_request {
 	"unsigned" : "actual"
 	"unsigned int" : "    frame_number"
     "//  0 "(imi_cmd_dev)
+    "//  0 "(imi_video_req)
+    "//  1 "(imi_upload_dev)
+    "//  2 "(imi_upload_dev)
     "//  0 "(musb_request)
-}
-
-
-class uvc_request_data {
-	"signed int" : "      length"
-	"__u8" : "    data[60]"
 }
 
 class usb_ep_ops {
@@ -222,7 +252,6 @@ class usb_ep_ops {
     "//  0 "(usb_ep)
 }
 
-
 class usb_ep_caps {
 	"unsigned" : "type_control:1"
 	"unsigned" : "type_iso:1"
@@ -232,7 +261,6 @@ class usb_ep_caps {
 	"unsigned" : "dir_out:1"
     "//  1 "(usb_ep)
 }
-
 
 class usb_ep {
 	"void" : "    *driver_data"
@@ -250,14 +278,10 @@ class usb_ep {
 	"u8" : "      address"
 	"struct usb_endpoint_descriptor" : " *desc"
 	"struct usb_ss_ep_comp_descriptor" : " *comp_desc"
+    "//  0 "(imi_upload_dev)
+    "//  0 "(imi_video_dev)
     "//  0 "(musb_ep)
     "//  2 "(usb_gadget)
-}
-
-
-class usb_dcd_config_params {
-	"__u8" : "    bU1devExitLat"
-	"__le16" : "  bU2DevExitLat"
 }
 
 class usb_gadget_ops {
@@ -275,7 +299,6 @@ class usb_gadget_ops {
 	"struct usb_ep *(*match_ep)" ()
     "//  1 "(usb_gadget)
 }
-
 
 class usb_gadget {
 	"struct usb_udc" : "  *udc  /*0*/"
@@ -314,40 +337,7 @@ class usb_gadget {
 }
 
 
-class usb_gadget_driver {
-	"char" : "    *function"
-	"enum usb_device_speed" : "   max_speed"
-	"int (*bind)" (usb_gadget:"*gadget" , usb_gadget_driver:"*driver")
-	"void (*unbind)" (usb_gadget:"*")
-	"int (*setup)" (usb_gadget:"*" , usb_ctrlrequest:"*")
-	"void (*disconnect)" (usb_gadget:"*")
-	"void (*suspend)" (usb_gadget:"*")
-	"void (*resume)" (usb_gadget:"*")
-	"void (*reset)" (usb_gadget:"*")
-	"char" : "    *udc_name"
-	"struct list_head" : "pending"
-	"unsigned" : "match_existing_only:1"
-    "//  0 "(usb_udc)
-    "//  5 "(musb)
-}
 
-
-class usb_string {
-	"u8" : "      id"
-	"char" : "      *s"
-    "//  0 "(usb_gadget_strings)
-}
-
-
-class usb_gadget_strings {
-	"u16" : "     language"
-	"struct usb_string" : "       *strings  /*0*/"
-}
-
-class usb_gadget_string_container {
-	"struct list_head" : "list"
-	"u8" : "      *stash[0]"
-}
 
 class musb_fifo_cfg {
 	"u8" : "      hw_ep_num"
@@ -357,13 +347,11 @@ class musb_fifo_cfg {
     "//  0 "(musb_hdrc_config)
 }
 
-
 class musb_hdrc_eps_bits {
 	"char" : "      name[16]"
 	"u8" : "      bits"
     "//  1 "(musb_hdrc_config)
 }
-
 
 class musb_hdrc_config {
 	"struct musb_fifo_cfg" : "    *fifo_cfg  /*0*/"
@@ -391,7 +379,6 @@ class musb_hdrc_config {
     "//  0 "(musb_hdrc_platform_data)
 }
 
-
 class musb_hdrc_platform_data {
 	"u8" : "      mode"
 	"char" : "      *clock"
@@ -406,15 +393,20 @@ class musb_hdrc_platform_data {
 
 
 
+imi_video_queue -c-> imi_video_dev
+imi_video_req -c-> imi_video_dev
+imi_video_sub_dev -c-> imi_video_dev
+imi_upload_dev -c-> imi_video_dev
+imi_video_dev -c-> imi_vendor_dev
 musb_hw_ep -c-> musb
-musb_csr_regs -c-> musb_context_registers
-musb_context_registers -c-> musb
 musb_ep -c-> musb_hw_ep
 usb_request -c-> musb_request
 usb_ep_caps -c-> usb_ep
 usb_ep -c-> musb_ep
 usb_gadget -c-> musb
 //usb_udc -a-> usb_gadget
+//imi_video_buffer -a-> imi_video_sub_dev
+//imi_video_sub_dev -a-> imi_video_buffer
 musb_platform_ops -a-> musb
 //musb_hw_ep -a-> musb
 //musb_hw_ep -a-> musb_ep
@@ -423,13 +415,13 @@ musb -a-> musb_request
 musb -a-> musb_ep
 musb_ep -a-> musb_request
 usb_request -a-> imi_cmd_dev
+usb_request -a-> imi_video_req
+usb_request -a-> imi_upload_dev
 usb_ep_ops -a-> usb_ep
+usb_ep -a-> imi_upload_dev
+usb_ep -a-> imi_video_dev
 usb_ep -a-> usb_gadget
 usb_gadget_ops -a-> usb_gadget
-//usb_gadget -a-> usb_udc
-usb_gadget_driver -a-> usb_udc
-usb_gadget_driver -a-> musb
-usb_string -a-> usb_gadget_strings
 musb_fifo_cfg -a-> musb_hdrc_config
 musb_hdrc_eps_bits -a-> musb_hdrc_config
 musb_hdrc_config -a-> musb

@@ -5,10 +5,11 @@
 
 
 // 1. 是否simple, simple: 没有关联的 class讲祛除
-//simple
+simple
 
-// 2. rm class
-musb
+// 2. rm_class ， rm_class是开关， 之后才是要移除的class
+//rm_class
+//musb
 
 // 3. rm file
 //u_imi.h

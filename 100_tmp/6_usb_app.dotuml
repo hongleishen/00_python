@@ -1,76 +1,11 @@
 ClassDiagram {
 
-
-class vendor_file_info {
-	"unsigned short" : "  type"
-	"unsigned short" : "  attr"
-	"unsigned int" : "    len"
-	"unsigned short" : "  crc"
-	"unsigned int" : "    offset"
-	"unsigned char" : "   *data"
-	"char" : "      *path"
-	"unsigned char" : "   init"
-}
-
-class sub_sys_param {
-	"struct imi_device_handle" : "*binder_handle"
-}
-
-class sub_sys_callback {
-	"int (*send_response)"(char:"*buf" , int:"len")
-}
-
-class sub_system_device {
-	"char" : "    *name"
-	"FRTOS_mutex" : "     mutex"
-	"int (*init)"(sub_sys_param:"*param")
-	"void (*deinit)"(voi:"void")
-	"int (*stream_ctl)"(imi_stream_ctl_cmd:"*cmd")
-	"int (*process_events)"(int:"stream_id" , imi_vendor_sensor_cmd:"*cmd")
-	"int (*handshake)"(void:"*pdata")
-	"int (*parameter_init)"(int:"id" , void:"*pdata")
-	"int (*send_response)"(char:"*buf" , int:"len")
-	"int (*handle_payment)"(char:"*packet" , int:"packet_len")
-}
-
-class usb_os_string {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    qwSignature[OS_STRING_QW_SIGN_LEN]"
-	"__u8" : "    bMS_VendorCode"
-	"__u8" : "    bPad"
-}
-
-class string_cache {
-	"int" : "     index"
-	"char" : "    buf[STRING_BUF_SIZE]"
-}
-
 class usb_udc {
 	"struct usb_gadget_driver" : "*driver  /*0*/"
 	"struct usb_gadget" : "       *gadget  /*1*/"
 	"struct list_head" : "list"
 	"bool" : "    vbus"
     "//  0 "(usb_gadget)
-}
-
-
-class utf8_table {
-	"int" : "     cmask"
-	"int" : "     cval"
-	"int" : "     shift"
-	"long" : "    lmask"
-	"long" : "    lval"
-}
-
-class imi_packet_header {
-	"unsigned int" : "    magic"
-	"unsigned short" : "  type"
-	"unsigned long long" : "      packet_id"
-	"unsigned int" : "    offset"
-	"unsigned int" : "    buf_size"
-	"unsigned long long" : "      time_stamp"
-	"unsigned short" : "  reserved"
 }
 
 class imi_video_buffer {
@@ -85,7 +20,6 @@ class imi_video_buffer {
     "//  0 "(imi_video_sub_dev)
 }
 
-
 class imi_video_queue {
 	"struct list_head" : "queued_entry"
 	"struct list_head" : "started_entry"
@@ -94,7 +28,6 @@ class imi_video_queue {
     "//  2 "(imi_video_dev)
 }
 
-
 class imi_video_req {
 	"struct usb_request" : "      *req[VIDEO_REQ_NUM]  /*0*/"
 	"unsigned char" : "   *req_buffer[VIDEO_REQ_NUM]"
@@ -102,13 +35,6 @@ class imi_video_req {
 	"struct list_head" : "req_busy"
 	"spinlock_t" : "      req_lock"
     "//  1 "(imi_video_dev)
-}
-
-
-class imi_addr_map {
-	"unsigned long" : "   phy_addr"
-	"void" : "    *kern_addr"
-	"unsigned int" : "    buf_size"
 }
 
 class imi_video_sub_dev {
@@ -123,7 +49,6 @@ class imi_video_sub_dev {
     "//  3 "(imi_video_dev)
 }
 
-
 class imi_upload_dev {
 	"struct usb_ep" : "   *ep_out  /*0*/"
 	"int" : "     bulk_out_maxpacket"
@@ -137,7 +62,6 @@ class imi_upload_dev {
     "//  4 "(imi_video_dev)
 }
 
-
 class imi_video_dev {
 	"struct usb_ep" : "   *ep  /*0*/"
 	"int" : "     connect"
@@ -150,19 +74,11 @@ class imi_video_dev {
     "//  0 "(imi_vendor_dev)
 }
 
-
 class imi_vendor_dev {
 	"struct usb_function" : "     function"
 	"struct usb_composite_dev" : "*cdev"
 	"int" : "     online"
 	"struct imi_video_dev" : "    vdev  /*0*/"
-}
-
-class free_record {
-	"struct list_head" : "list"
-	"struct device" : "   *dev"
-	"unsigned" : "bytes"
-	"dma_addr_t" : "      dma"
 }
 
 class musb_request {
@@ -193,113 +109,6 @@ class musb_ep {
     "//  1 "(musb_request)
 }
 
-
-class musb_io {
-	"u32" : "     quirks"
-	"u32 (*ep_offset)"(u8:"epnum" , u16:"offset")
-	"void    (*ep_select)"(__iomem:"*mbase" , u8:"epnum")
-	"u32 (*fifo_offset)"(u8:"epnum")
-	"void    (*read_fifo)"(musb_hw_ep:"*hw_ep" , u16:"len" , u8:"*buf")
-	"void    (*write_fifo)"(musb_hw_ep:"*hw_ep" , u16:"len" , u8:"*buf")
-	"u32 (*busctl_offset)"(u8:"epnum" , u16:"offset")
-}
-
-class imi_video_req_buf {
-	"unsigned char" : "   dev_index"
-	"unsigned int" : "    num"
-	"unsigned int" : "    buf_offset"
-	"enum imi_buf_type" : "       type"
-}
-
-class imi_video_buf_info {
-	"unsigned char" : "   dev_index"
-	"unsigned int" : "    index"
-	"unsigned long" : "   phy_addr"
-	"unsigned long long" : "      tm_stamp"
-	"unsigned int" : "    frame_len"
-}
-
-class imi_video_sub_dev_ctl {
-	"unsigned char" : "   dev_index"
-	"unsigned char" : "   cmd"
-}
-
-class imi_video_echo_addr {
-	"unsigned long" : "   addr"
-	"unsigned int" : "    len"
-}
-
-class imi_video_echo_frame_head {
-	"unsigned int" : "    magic"
-	"unsigned int" : "    rest_len"
-	"unsigned int" : "    width"
-	"unsigned int" : "    height"
-}
-
-class g_usb_bind_callback {
-	"char" : "      *usb_function_name"
-	"g_bind_callback_f" : "       fptr"
-}
-
-class usb_ctrlrequest {
-	"__u8" : "    bRequestType"
-	"__u8" : "    bRequest"
-	"__le16" : "  wValue"
-	"__le16" : "  wIndex"
-	"__le16" : "  wLength"
-}
-
-class usb_descriptor_header {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-}
-
-class usb_device_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__le16" : "  bcdUSB"
-	"__u8" : "    bDeviceClass"
-	"__u8" : "    bDeviceSubClass"
-	"__u8" : "    bDeviceProtocol"
-	"__u8" : "    bMaxPacketSize0"
-	"__le16" : "  idVendor"
-	"__le16" : "  idProduct"
-	"__le16" : "  bcdDevice"
-	"__u8" : "    iManufacturer"
-	"__u8" : "    iProduct"
-	"__u8" : "    iSerialNumber"
-	"__u8" : "    bNumConfigurations"
-}
-
-class usb_config_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__le16" : "  wTotalLength"
-	"__u8" : "    bNumInterfaces"
-	"__u8" : "    bConfigurationValue"
-	"__u8" : "    iConfiguration"
-	"__u8" : "    bmAttributes"
-	"__u8" : "    bMaxPower"
-}
-
-class usb_string_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__le16" : "  wData[1]"
-}
-
-class usb_interface_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bInterfaceNumber"
-	"__u8" : "    bAlternateSetting"
-	"__u8" : "    bNumEndpoints"
-	"__u8" : "    bInterfaceClass"
-	"__u8" : "    bInterfaceSubClass"
-	"__u8" : "    bInterfaceProtocol"
-	"__u8" : "    iInterface"
-}
-
 class usb_endpoint_descriptor {
 	"__u8" : "    bLength"
 	"__u8" : "    bDescriptorType"
@@ -313,14 +122,6 @@ class usb_endpoint_descriptor {
     "//  2 "(usb_ep)
 }
 
-
-class usb_ssp_isoc_ep_comp_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__le16" : "  wReseved"
-	"__le32" : "  dwBytesPerInterval"
-}
-
 class usb_ss_ep_comp_descriptor {
 	"__u8" : "    bLength"
 	"__u8" : "    bDescriptorType"
@@ -328,227 +129,6 @@ class usb_ss_ep_comp_descriptor {
 	"__u8" : "    bmAttributes"
 	"__le16" : "  wBytesPerInterval"
     "//  3 "(usb_ep)
-}
-
-
-class usb_qualifier_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__le16" : "  bcdUSB"
-	"__u8" : "    bDeviceClass"
-	"__u8" : "    bDeviceSubClass"
-	"__u8" : "    bDeviceProtocol"
-	"__u8" : "    bMaxPacketSize0"
-	"__u8" : "    bNumConfigurations"
-	"__u8" : "    bRESERVED"
-}
-
-class usb_otg_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bmAttributes"
-}
-
-class usb_otg20_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bmAttributes"
-}
-
-class usb_debug_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDebugInEndpoint"
-	"__u8" : "    bDebugOutEndpoint"
-}
-
-class usb_interface_assoc_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bFirstInterface"
-	"__u8" : "    bInterfaceCount"
-	"__u8" : "    bFunctionClass"
-	"__u8" : "    bFunctionSubClass"
-	"__u8" : "    bFunctionProtocol"
-	"__u8" : "    iFunction"
-}
-
-class usb_security_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__le16" : "  wTotalLength"
-	"__u8" : "    bNumEncryptionTypes"
-}
-
-class usb_key_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    tTKID[3]"
-	"__u8" : "    bReserved"
-	"__u8" : "    bKeyData[0]"
-}
-
-class usb_encryption_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bEncryptionType"
-	"__u8" : "    bEncryptionValue"
-	"__u8" : "    bAuthKeyIndex"
-}
-
-class usb_bos_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__le16" : "  wTotalLength"
-	"__u8" : "    bNumDeviceCaps"
-}
-
-class usb_dev_cap_header {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-}
-
-class usb_wireless_cap_descriptor {    
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-	"__u8" : "    bmAttributes"
-	"__le16" : "  wPHYRates"
-	"__u8" : "    bmTFITXPowerInfo"
-	"__u8" : "    bmFFITXPowerInfo"
-	"__le16" : "  bmBandGroup"
-	"__u8" : "    bReserved"
-}
-
-class usb_ext_cap_descriptor {     
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-	"__le32" : "  bmAttributes"
-}
-
-class usb_ss_cap_descriptor {      
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-	"__u8" : "    bmAttributes"
-	"__le16" : "  wSpeedSupported"
-	"__u8" : "    bFunctionalitySupport"
-	"__u8" : "    bU1devExitLat"
-	"__le16" : "  bU2DevExitLat"
-}
-
-class usb_ss_container_id_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-	"__u8" : "    bReserved"
-	"__u8" : "    ContainerID[16]"
-}
-
-class usb_ssp_cap_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-	"__u8" : "    bReserved"
-	"__le32" : "  bmAttributes"
-	"__le16" : "  wFunctionalitySupport"
-	"__le16" : "  wReserved"
-	"__le32" : "  bmSublinkSpeedAttr[1]"
-}
-
-class usb_pd_cap_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-	"__u8" : "    bReserved"
-	"__le32" : "  bmAttributes"
-	"__le16" : "  bmProviderPorts"
-	"__le16" : "  bmConsumerPorts"
-	"__le16" : "  bcdBCVersion"
-	"__le16" : "  bcdPDVersion"
-	"__le16" : "  bcdUSBTypeCVersion"
-}
-
-class usb_pd_cap_battery_info_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-	"__u8" : "    iBattery"
-	"__u8" : "    iSerial"
-	"__u8" : "    iManufacturer"
-	"__u8" : "    bBatteryId"
-	"__u8" : "    bReserved"
-	"__le32" : "  dwChargedThreshold"
-	"__le32" : "  dwWeakThreshold"
-	"__le32" : "  dwBatteryDesignCapacity"
-	"__le32" : "  dwBatteryLastFullchargeCapacity"
-}
-
-class usb_pd_cap_consumer_port_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-	"__u8" : "    bReserved"
-	"__u8" : "    bmCapabilities"
-	"__le16" : "  wMinVoltage"
-	"__le16" : "  wMaxVoltage"
-	"__u16" : "   wReserved"
-	"__le32" : "  dwMaxOperatingPower"
-	"__le32" : "  dwMaxPeakPower"
-	"__le32" : "  dwMaxPeakPowerTime"
-}
-
-class usb_pd_cap_provider_port_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-	"__u8" : "    bReserved1"
-	"__u8" : "    bmCapabilities"
-	"__u8" : "    bNumOfPDObjects"
-	"__u8" : "    bReserved2"
-	"__le32" : "  wPowerDataObject[]"
-}
-
-class usb_ptm_cap_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bDevCapabilityType"
-}
-
-class usb_wireless_ep_comp_descriptor {
-	"__u8" : "    bLength"
-	"__u8" : "    bDescriptorType"
-	"__u8" : "    bMaxBurst"
-	"__u8" : "    bMaxSequence"
-	"__le16" : "  wMaxStreamDelay"
-	"__le16" : "  wOverTheAirPacketSize"
-	"__u8" : "    bOverTheAirInterval"
-	"__u8" : "    bmCompAttributes"
-}
-
-class usb_handshake {
-	"__u8" : "    bMessageNumber"
-	"__u8" : "    bStatus"
-	"__u8" : "    tTKID[3]"
-	"__u8" : "    bReserved"
-	"__u8" : "    CDID[16]"
-	"__u8" : "    nonce[16]"
-	"__u8" : "    MIC[8]"
-}
-
-class usb_connection_context {
-	"__u8" : "    CHID[16]"
-	"__u8" : "    CDID[16]"
-	"__u8" : "    CK[16]"
-}
-
-class usb_set_sel_req {
-	"__u8" : "    u1_sel"
-	"__u8" : "    u1_pel"
-	"__le16" : "  u2_sel"
-	"__le16" : "  u2_pel"
 }
 
 class usb_request {
@@ -571,12 +151,6 @@ class usb_request {
     "//  0 "(musb_request)
 }
 
-
-class uvc_request_data {
-	"signed int" : "      length"
-	"__u8" : "    data[60]"
-}
-
 class usb_ep_ops {
 	"int (*enable) (struct usb_ep *ep,struct usb_endpoint_descriptor" : " *desc)"
 	"int (*disable) (struct usb_ep" : "*ep)"
@@ -591,7 +165,6 @@ class usb_ep_ops {
     "//  0 "(usb_ep)
 }
 
-
 class usb_ep_caps {
 	"unsigned" : "type_control:1"
 	"unsigned" : "type_iso:1"
@@ -601,7 +174,6 @@ class usb_ep_caps {
 	"unsigned" : "dir_out:1"
     "//  1 "(usb_ep)
 }
-
 
 class usb_ep {
 	"void" : "    *driver_data"
@@ -625,12 +197,6 @@ class usb_ep {
     "//  2 "(usb_gadget)
 }
 
-
-class usb_dcd_config_params {
-	"__u8" : "    bU1devExitLat"
-	"__le16" : "  bU2DevExitLat"
-}
-
 class usb_gadget_ops {
 	"int (*get_frame)"(usb_gadget:"*")
 	"int (*wakeup)"(usb_gadget:"*")
@@ -646,7 +212,6 @@ class usb_gadget_ops {
 	"struct usb_ep *(*match_ep)"()
     "//  1 "(usb_gadget)
 }
-
 
 class usb_gadget {
 	"struct usb_udc" : "  *udc  /*0*/"
@@ -683,7 +248,6 @@ class usb_gadget {
     "//  1 "(usb_udc)
 }
 
-
 class usb_gadget_driver {
 	"char" : "    *function"
 	"enum usb_device_speed" : "   max_speed"
@@ -699,13 +263,6 @@ class usb_gadget_driver {
 	"unsigned" : "match_existing_only:1"
     "//  0 "(usb_udc)
 }
-
-
-class usb_gadget_string_container {
-	"struct list_head" : "list"
-	"u8" : "      *stash[0]"
-}
-
 
 
 

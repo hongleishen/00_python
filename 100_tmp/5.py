@@ -675,8 +675,8 @@ if __name__ == '__main__':
     # if len(sys.argv) >= 4:
     #     dir_rm_file = sys.argv[3]
     #     text, text_relation = process_rm_class_file(text, text_relation, dir_rm_file)
-    
-    text, text_relation = process_rm_class_file(text, text_relation, ls_config)
+    if 'rm_class' in ls_config:
+        text, text_relation = process_rm_class_file(text, text_relation, ls_config)
 
     # 12. 处理 ClassDiagram
     print('\n --------10. 处理 ClassDiagram')

@@ -25,7 +25,7 @@ simple
 // imi_upload_dev
 
 
-# under_stand
+// ** under_stand ****
 rm_class
 usb_udc
 usb_gadget_driver
@@ -33,6 +33,14 @@ usb_gadget_strings
 usb_string
 musb_context_registers
 musb_csr_regs
+
+imi_video_buffer
+musb_platform_ops
+usb_gadget_ops
+
+usb_ep_ops
+usb_ep_caps
+
 
 // **** 3. rm file ****
 //u_imi.h

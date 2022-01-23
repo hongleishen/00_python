@@ -14,17 +14,6 @@ class imi_cmd_dev {
 	"int" : "     exit"
 }
 
-class imi_video_buffer {
-	"struct list_head" : "list"
-	"unsigned int" : "    index"
-	"unsigned int" : "    frame_len"
-	"enum imi_buffer_state" : "   state"
-	"void" : "    *mem"
-	"unsigned int" : "    transferred"
-	"unsigned int" : "    buf_id"
-	"struct imi_video_sub_dev" : "*dev  /*0*/"
-    "//  0 "(imi_video_sub_dev)
-}
 
 class imi_video_queue {
 	"struct list_head" : "queued_entry"
@@ -87,19 +76,6 @@ class imi_vendor_dev {
 	"struct imi_video_dev" : "    vdev  /*0*/"
 }
 
-class musb_platform_ops {
-	"int (*init)" (musb:"*musb")
-	"int (*exit)" (musb:"*musb")
-	"int (*enable)" (musb:"*musb")
-	"void (*disable)" (musb:"*musb")
-	"int (*set_mode)" (musb:"*musb" , u8:"mode")
-	"int (*vbus_status)" (musb:"*musb")
-	"void (*set_vbus)" (musb:"*musb" , int:"on")
-	"int (*adjust_channel_params)" ()
-	"void (*pre_root_reset_end)" (musb:"*musb")
-	"void (*post_root_reset_end)" (musb:"*musb")
-    "//  0 "(musb)
-}
 
 class musb_hw_ep {
 	"struct musb" : "     *musb  /*0*/"
@@ -133,7 +109,6 @@ class musb {
 	"irqreturn_t (*isr)" (in:"int" , void:"*")
 	"u16" : "     hwvers"
 	"u32" : "     port1_status"
-	"unsigned long" : "   rh_timer"
 	"enum musb_h_ep0_state" : "   ep0_stage"
 	"struct musb_hw_ep" : "       *bulk_ep  /*2*/"
 	"struct list_head" : "control"
@@ -155,33 +130,13 @@ class musb {
 	"u8" : "      nr_endpoints"
 	"u8" : "      board_mode"
 	"int (*board_set_power)" (int:"state")
-	"u8" : "      min_power"
-	"bool" : "    is_host"
-	"int" : "     a_wait_bcon"
-	"unsigned long" : "   idle_timeout"
-	"unsigned" : "is_active:1"
-	"unsigned" : "is_multipoint:1"
-	"unsigned" : "ignore_disconnect:1"
-	"unsigned" : "hb_iso_rx:1"
-	"unsigned" : "hb_iso_tx:1"
-	"unsigned" : "dyn_fifo:1"
-	"unsigned" : "bulk_split:1"
-	"unsigned" : "bulk_combine:1"
-	"unsigned" : "is_suspended:1"
-	"unsigned" : "may_wakeup:1"
-	"unsigned" : "is_self_powered:1"
-	"unsigned" : "is_bus_powered:1"
-	"unsigned" : "set_address:1"
-	"unsigned" : "test_mode:1"
-	"unsigned" : "softconnect:1"
 	"u8" : "      address"
 	"u8" : "      test_mode_nr"
 	"u16" : "     ackpend"
 	"enum musb_g_ep0_state" : "   ep0_state"
-	"struct usb_gadget" : "       g  /*4*/"
-	"struct usb_gadget_driver" : "*gadget_driver  /*5*/"
+	"struct usb_gadget_driver" : "*gadget_driver  /*4*/"
 	"unsigned" : "double_buffer_not_ok:1"
-	"struct musb_hdrc_config" : " *config  /*6*/"
+	"struct musb_hdrc_config" : " *config"
     "//  0 "(musb_hw_ep)
     "//  2 "(musb_request)
     "//  2 "(musb_ep)
@@ -238,29 +193,7 @@ class usb_request {
     "//  0 "(musb_request)
 }
 
-class usb_ep_ops {
-	"int (*enable) (struct usb_ep *ep,struct usb_endpoint_descriptor" : " *desc)"
-	"int (*disable) (struct usb_ep" : "*ep)"
-	"struct usb_request *(*alloc_request) (struct usb_ep *ep,gfp_t" : " gfp_flags)"
-	"void (*free_request) (struct usb_ep *ep, struct usb_request" : " *req)"
-	"int (*queue) (struct usb_ep *ep, struct usb_request *req,gfp_t" : " gfp_flags)"
-	"int (*dequeue) (struct usb_ep *ep, struct usb_request" : " *req)"
-	"int (*set_halt) (struct usb_ep *ep, int" : " value)"
-	"int (*set_wedge)" (usb_ep:"*ep")
-	"int (*fifo_status) (struct usb_ep" : "*ep)"
-	"void (*fifo_flush) (struct usb_ep" : "*ep)"
-    "//  0 "(usb_ep)
-}
 
-class usb_ep_caps {
-	"unsigned" : "type_control:1"
-	"unsigned" : "type_iso:1"
-	"unsigned" : "type_bulk:1"
-	"unsigned" : "type_int:1"
-	"unsigned" : "dir_in:1"
-	"unsigned" : "dir_out:1"
-    "//  1 "(usb_ep)
-}
 
 class usb_ep {
 	"void" : "    *driver_data"
@@ -284,21 +217,6 @@ class usb_ep {
     "//  2 "(usb_gadget)
 }
 
-class usb_gadget_ops {
-	"int (*get_frame)" (usb_gadget:"*")
-	"int (*wakeup)" (usb_gadget:"*")
-	"int (*set_selfpowered) (struct usb_gadget *, int" : " is_selfpowered)"
-	"int (*vbus_session) (struct usb_gadget *, int" : " is_active)"
-	"int (*vbus_draw) (struct usb_gadget *, unsigned" : " mA)"
-	"int (*pullup) (struct usb_gadget *, int" : " is_on)"
-	"int (*ioctl)" (usb_gadget:"*" , unsigned:"code" , long:"param")
-	"void (*get_config_params)" (usb_dcd_config_params:"*")
-	"int (*udc_start)" (usb_gadget:"*" , usb_gadget_driver:"*")
-	"int (*udc_stop)" (usb_gadget:"*")
-	"void (*udc_set_speed)" (usb_gadget:"*" , enum:"usb_device_speed")
-	"struct usb_ep *(*match_ep)" ()
-    "//  1 "(usb_gadget)
-}
 
 class usb_gadget {
 	"struct usb_udc" : "  *udc  /*0*/"
@@ -315,80 +233,10 @@ class usb_gadget {
 	"unsigned" : "in_epnum"
 	"unsigned" : "mA"
 	"unsigned" : "isoch_delay"
-	"unsigned" : "sg_supported:1"
-	"unsigned" : "is_otg:1"
-	"unsigned" : "is_a_peripheral:1"
-	"unsigned" : "b_hnp_enable:1"
-	"unsigned" : "a_hnp_support:1"
-	"unsigned" : "a_alt_hnp_support:1"
-	"unsigned" : "hnp_polling_support:1"
-	"unsigned" : "host_request_flag:1"
-	"unsigned" : "quirk_ep_out_aligned_size:1"
-	"unsigned" : "quirk_altset_not_supp:1"
-	"unsigned" : "quirk_stall_not_supp:1"
-	"unsigned" : "quirk_zlp_not_supp:1"
-	"unsigned" : "quirk_avoids_skb_reserve:1"
-	"unsigned" : "is_selfpowered:1"
-	"unsigned" : "deactivated:1"
-	"unsigned" : "connected:1"
-	"unsigned" : "lpm_capable:1"
     "//  1 "(usb_udc)
-    "//  4 "(musb)
 }
 
 
-
-
-class musb_fifo_cfg {
-	"u8" : "      hw_ep_num"
-	"enum musb_fifo_style" : "    style"
-	"enum musb_buf_mode" : "      mode"
-	"u16" : "     maxpacket"
-    "//  0 "(musb_hdrc_config)
-}
-
-class musb_hdrc_eps_bits {
-	"char" : "      name[16]"
-	"u8" : "      bits"
-    "//  1 "(musb_hdrc_config)
-}
-
-class musb_hdrc_config {
-	"struct musb_fifo_cfg" : "    *fifo_cfg  /*0*/"
-	"unsigned" : "fifo_cfg_size"
-	"unsigned" : "multipoint:1"
-	"unsigned" : "dyn_fifo:1"
-	"unsigned" : "soft_con:1"
-	"unsigned" : "utm_16:1"
-	"unsigned" : "big_endian:1"
-	"unsigned" : "mult_bulk_tx:1"
-	"unsigned" : "mult_bulk_rx:1"
-	"unsigned" : "high_iso_tx:1"
-	"unsigned" : "high_iso_rx:1"
-	"unsigned" : "dma:1"
-	"unsigned" : "vendor_req:1"
-	"u8" : "      num_eps"
-	"u8" : "      dma_channels"
-	"u8" : "      dyn_fifo_size"
-	"u8" : "      vendor_ctrl"
-	"u8" : "      vendor_stat"
-	"u8" : "      dma_req_chan"
-	"u8" : "      ram_bits"
-	"struct musb_hdrc_eps_bits" : "*eps_bits  /*1*/"
-    "//  6 "(musb)
-    "//  0 "(musb_hdrc_platform_data)
-}
-
-class musb_hdrc_platform_data {
-	"u8" : "      mode"
-	"char" : "      *clock"
-	"int (*set_vbus)" (device:"*dev" , int:"is_on")
-	"u8" : "      min_power"
-	"int (*set_power)" (int:"state")
-	"struct musb_hdrc_config" : " *config  /*0*/"
-	"void" : "    *board_data"
-	"void" : "      *platform_ops"
-}
 
 
 
@@ -401,32 +249,27 @@ imi_video_dev -c-> imi_vendor_dev
 musb_hw_ep -c-> musb
 musb_ep -c-> musb_hw_ep
 usb_request -c-> musb_request
-usb_ep_caps -c-> usb_ep
 usb_ep -c-> musb_ep
-usb_gadget -c-> musb
 //usb_udc -a-> usb_gadget
 //imi_video_buffer -a-> imi_video_sub_dev
-//imi_video_sub_dev -a-> imi_video_buffer
-musb_platform_ops -a-> musb
 //musb_hw_ep -a-> musb
 //musb_hw_ep -a-> musb_ep
 //musb -a-> musb_hw_ep
-musb -a-> musb_request
+
+//musb -a-> musb_request
 musb -a-> musb_ep
 musb_ep -a-> musb_request
 usb_request -a-> imi_cmd_dev
 usb_request -a-> imi_video_req
 usb_request -a-> imi_upload_dev
-usb_ep_ops -a-> usb_ep
 usb_ep -a-> imi_upload_dev
 usb_ep -a-> imi_video_dev
 usb_ep -a-> usb_gadget
-usb_gadget_ops -a-> usb_gadget
-musb_fifo_cfg -a-> musb_hdrc_config
-musb_hdrc_eps_bits -a-> musb_hdrc_config
-musb_hdrc_config -a-> musb
-musb_hdrc_config -a-> musb_hdrc_platform_data
 
 
+//align {
+//	imi_video_queue
+//	imi_video_dev	
+//}
 
 }
